@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Transactions - Chickano's Vapeshop</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* ======== BACKGROUND & BASE ======== */
+    body {
+      background: radial-gradient(circle at top, #1a1a1a 0%, #000 80%);
+      color: #f5f5f5;
+      font-family: 'Poppins', sans-serif;
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Animated Smoke */
+    body::before, body::after {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 200%;
+      height: 200%;
+      background: url('https://bgfons.com/uploads/smoke/smoke_texture2741.jpg') repeat;
+      background-size: cover;
+      opacity: 0.08;
+      z-index: -2;
+    }
+    body::after {
+      animation-direction: reverse;
+      opacity: 0.12;
+    }
+    .navbar {
+      background: linear-gradient(90deg, #000, #222, #000);
+      border-bottom: 2px solid #474747;
+      box-shadow: 0 0 15px rgba(129, 129, 129, 0.5);
+    }
+
+    .navbar-brand, .nav-link {
+      color: #f8f9fa !important;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      font-size: 0.85rem; /* Smaller font size */
+    }
+    
+    .navbar-brand {
+      font-size: 1rem; /* Slightly larger for brand */
+    }
+
+    .nav-link.active {
+      color: #8e8e8e !important;
+    }
+
+    .btn-light {
+      background-color: #fbfbfb;
+      border: none;
+      color: rgb(31, 31, 31);
+      font-weight: 500;
+      box-shadow: 0 0 8px rgba(253, 253, 253, 0.4);
+      transition: 0.3s;
+    }
+    .btn-light:hover {
+      background-color: #8c8c8b;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
+    }
+
+    /* ======== CONTENT ======== */
+    h3 {
+      color: #ffffff;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .table {
+      background-color: rgba(20, 20, 20, 0.8);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #eaeaea;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    }
+
+    .table thead {
+      background: linear-gradient(90deg, #111, #222);
+      color: #fd7e14;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+
+    .table tbody tr:hover {
+      background-color: rgba(253,126,20,0.1);
+      transition: 0.2s ease-in-out;
+    }
+
+    td, th {
+      border-color: rgba(255,255,255,0.1) !important;
+    }
+
+    p {
+      color: #ccc;
+      font-style: italic;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+{% if session.get('role_id') == 3 %}
+<!-- Employee Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: linear-gradient(90deg, #000, #222, #000); border-bottom: 2px solid #202020; box-shadow: 0 0 15px rgba(123, 123, 123, 0.5);">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('emp_dashboard') }}">Chickano's Vapeshop - Employee</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('emp_dashboard') }}">📊 Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('order_management') }}">🛒 Order Management</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ url_for('transactions_page') }}">💰 Transactions</a>
+        </li>
+      </ul>
+      <div class="d-flex ms-auto">
+        <span class="navbar-text me-3 text-white">Logged in as: <strong>{{ session['email'] }}</strong></span>
+        <a class="btn btn-light btn-sm" href="{{ url_for('logout') }}">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+{% else %}
+<!-- Admin Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: linear-gradient(90deg, #000, #222, #000); border-bottom: 2px solid #202020; box-shadow: 0 0 15px rgba(123, 123, 123, 0.5);">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('dashboard') }}">Chickano's Vapeshop - Admin</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('dashboard') }}">📊 Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('order_management') }}">🛒 Order Management</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ url_for('transactions_page') }}">💰 Transactions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('manage_products') }}">📦 Manage Products</a>
+        </li>
+      </ul>
+      <div class="d-flex ms-auto">
+        <span class="navbar-text me-3 text-white">Logged in as: <strong>{{ session['email'] }}</strong></span>
+        <a class="btn btn-light btn-sm" href="{{ url_for('logout') }}">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+{% endif %}
+
+<!-- Content -->
+<div class="container py-5">
+  <h3 class="mb-4 text-center">💰 Transaction History</h3>
+
+  {% if transactions %}
+  <table class="table table-bordered table-striped align-middle text-center">
+    <thead>
+      <tr>
+        <th>Transaction ID</th>
+        <th>Date</th>
+        <th>Order ID</th>
+        <th>User</th>
+        <th>Total Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tx in transactions %}
+      <tr>
+        <td>{{ tx.id }}</td>
+        <td>{{ tx.date }}</td>
+        <td>{{ tx.order_id }}</td>
+        <td>{{ tx.user }}</td>
+        <td>₱{{ tx.total }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No transactions found.</p>
+  {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

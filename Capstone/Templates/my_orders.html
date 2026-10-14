@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Orders - Chickano's Vapeshop</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #0e0e0e;
+      color: #eaeaea;
+      margin: 0;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    .text-yellow { color: #ffffff; }
+    .btn-yellow { background-color: #ffffff; color: #000; border: none; font-weight: 600; }
+    .btn-yellow:hover { background-color: #828281; color: #000; }
+    h2 {
+      color: #ffffff;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .navbar {
+      background-color: #0f0f0f;
+    }
+    .navbar .nav-link {
+      color: #eaeaea !important;
+      font-weight: 500;
+      margin-right: 1rem;
+    }
+    .navbar .nav-link:hover { color: #ffffff !important; }
+    .navbar-toggler { border: none; }
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23ffcc00' viewBox='0 0 30 30'%3E%3Cpath stroke='%23ffcc00' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+    }
+    .brand-logo { height: 40px; }
+    .btn-logout {
+      background-color: #ffffff;
+      border: none;
+      color: #000;
+      font-weight: 600;
+    }
+
+    /* --- Order Cards --- */
+    /* Orders Grid Layout */
+    .orders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+    }
+
+    @media (max-width: 1100px) {
+      .orders-grid {
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .orders-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .order-card {
+      background-color: #1c1c1c;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(255,255,255,0.1);
+      padding: 1.25rem;
+      border: 1px solid #333;
+      height: 100%;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .order-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(255,255,255,0.15);
+    }
+    .order-card h5, .order-card .fw-semibold {
+      color: #f8f9fa !important;
+    }
+    .order-card .text-muted {
+      color: #adb5bd !important;
+    }
+    .product-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 10px 15px;
+      border-radius: 8px;
+      background-color: rgba(255,255,255,0.03);
+      transition: all 0.2s;
+      position: relative;
+    }
+    .product-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    /* Make remove button more visible on hover */
+    .product-item:hover .remove-item-btn {
+      background-color: rgba(220, 53, 69, 0.2) !important;
+    }
+    .product-item img {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 10px;
+    }
+    .btn-manage {
+      background-color: transparent;
+      border: 1px solid #ffffff;
+      color: #ffffff;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+    .btn-manage:hover {
+      background-color: #ffffff;
+      color: #000;
+    }
+    .btn-outline-light:hover {
+      background-color: #fd7e14;
+      border-color: #fd7e14;
+      color: #fff;
+    }
+    .remove-item-btn {
+      color: #fff !important;
+      background-color: #dc3545 !important;
+      border: none !important;
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      font-size: 1.5rem;
+      font-weight: bold;
+      line-height: 1;
+      border-radius: 50%;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .remove-item-btn:hover {
+      background-color: #c82333 !important;
+      transform: scale(1.15);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    }
+
+    /* Collapsible toggle on mobile */
+    @media (max-width: 768px) {
+      .collapse-toggle {
+        font-size: 0.9rem;
+        color: #ffffff;
+        text-decoration: none;
+      }
+      .collapse-toggle:hover {
+        text-decoration: underline;
+      }
+    }
+  </style>
+  <style>
+    /* Mobile Menu Styles */
+    .navbar-toggler {
+      border: none;
+      padding: 0.5rem;
+      z-index: 1001;
+      position: relative;
+    }
+    
+    .navbar-toggler:focus {
+      box-shadow: none;
+      outline: none;
+    }
+    
+    .navbar-toggler .icon-bar {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background-color: #ffffff;
+      margin: 4px 0;
+      transition: all 0.3s ease;
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .icon-bar:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .icon-bar:nth-child(2) {
+      opacity: 0;
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .icon-bar:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+    
+    .mobile-menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .mobile-menu-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 300px;
+      height: 100%;
+      background-color: #1a1a1a;
+      z-index: 1000;
+      padding: 80px 20px 20px;
+      transition: right 0.3s ease;
+      overflow-y: auto;
+    }
+    
+    .mobile-menu.active {
+      right: 0;
+    }
+    
+    .mobile-menu .nav-link {
+      color: #ffffff;
+      padding: 10px 0;
+      border-bottom: 1px solid #333;
+    }
+    
+    .mobile-menu .nav-link:hover {
+      color: #ffcc00;
+    }
+    
+    .user-info {
+      padding-bottom: 15px;
+      border-bottom: 1px solid #333;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+  
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="user-info">
+      {% if session.get('user_id') %}
+        <div class="text-white small mb-2">Logged in as: {{ session.get('email') }}</div>
+      {% endif %}
+    </div>
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('products') }}">Shop</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('about') if session.get('user_id') else url_for('login', next='about') }}">About</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#contact">Contact</a>
+      </li>
+      {% if session.get('user_id') %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('my_orders') }}">My Orders</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+        </li>
+      {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('login', next='products') }}">Login</a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold text-yellow d-flex align-items-center me-auto" href="{{ url_for('products') if session.get('user_id') else url_for('login') }}">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Chickano's Vapeshop logo" class="brand-logo me-2">
+      <span>Chickano's Vapeshop</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" aria-label="Toggle navigation" id="mobileMenuButton">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('products') }}">Shop</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('about') if session.get('user_id') else url_for('login', next='about') }}">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#contact">Contact</a>
+        </li>
+        {% if session.get('user_id') %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+          </li>
+          <li class="nav-item ms-lg-3">
+            <a href="{{ url_for('my_orders') }}" class="btn btn-yellow btn-sm">📦 My Orders</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('login', next='products') }}">Login</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+  </nav>
+
+<div class="container py-4">
+  <h2 class="text-center mb-4">📦 My Orders</h2>
+
+  <!-- ✅ Flask Alerts -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% if orders and orders|length > 0 %}
+    <div class="orders-grid">
+      {% for order in orders %}
+        <div class="order-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Order #{{ order.OrderID }}</h5>
+          <div class="d-flex align-items-center">
+            <span class="badge bg-{{ 'warning' if order.Order_Status == 'Pending' else 'success' }} me-2">
+              {{ order.Order_Status }}
+            </span>
+            {% if order.Order_Status == 'Pending' and order.can_edit %}
+            <a href="{{ url_for('edit_order', order_id=order.OrderID) }}" class="btn btn-sm btn-outline-primary">
+              <i class="bi bi-pencil-square me-1"></i> Edit Order
+            </a>
+            {% endif %}
+          </div>
+        </div>
+        <small class="text-muted">Date: {{ order.Order_Date }}</small>
+        <hr>
+
+        {% if order['items'] %}
+          {% set first = order['items'][0] %}
+          <div class="product-item">
+            <img src="{{ first.image }}" alt="{{ first.name }}" style="width: 50px; height: 50px; object-fit: cover;">
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <p class="mb-1 fw-semibold">{{ first.name }}</p>
+                  <small>Qty: {{ first.quantity }} × ₱{{ first.price }}</small>
+                </div>
+                {% set remaining = order['items']|length - 1 %}
+                {% if remaining > 0 %}
+                  <span class="badge bg-secondary ms-2">+{{ remaining }} more</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <p class="text-muted small mb-0">No products found for this order.</p>
+        {% endif %}
+
+        <hr>
+        <div class="d-flex justify-content-between align-items-center mt-2">
+          <div>
+            <strong>Total: ₱{{ order.TotalPrice }}</strong>
+            {% set remaining = order['items']|length - 1 %}
+            {% if remaining > 0 %}
+              <div class="small text-muted">{{ order['items']|length }} item{% if order['items']|length > 1 %}s{% endif %} in this order</div>
+            {% endif %}
+          </div>
+          
+          <!-- Toggle button for all screen sizes -->
+          <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" href="#details{{ order.OrderID }}" role="button" aria-expanded="false" aria-controls="details{{ order.OrderID }}">
+            <span class="d-none d-md-inline">{% if remaining > 0 %}View{% else %}Order{% endif %} Details</span>
+            <span class="d-inline d-md-none">Details</span>
+            <i class="bi bi-chevron-down ms-1"></i>
+          </a>
+        </div>
+
+        <!-- ✅ Collapsible Details -->
+        <div class="collapse mt-3" id="details{{ order.OrderID }}">
+          {% if order['items'] and order['items']|length > 1 %}
+            <div class="border-top pt-3">
+              <h6 class="mb-3">All Items in This Order:</h6>
+              {% for item in order['items'] %}
+                <div class="product-item mb-3">
+                  <img src="{{ item.image }}" alt="{{ item.name }}" style="width: 50px; height: 50px; object-fit: cover;">
+                  <div class="flex-grow-1 ms-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                        <p class="mb-1 fw-semibold">{{ item.name }}</p>
+                        <small>Qty: {{ item.quantity }} × ₱{{ item.price }}</small>
+                      </div>
+                      <span class="text-muted">
+                        {{ item.quantity }} × ₱{{ item.price }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                {% if not loop.last %}<hr class="my-2">{% endif %}
+              {% endfor %}
+            </div>
+            <hr>
+          {% endif %}
+          <div class="d-flex justify-content-between align-items-center flex-wrap">
+            {% if order.Order_Status == 'Approved' %}
+              <a href="{{ url_for('download_order', order_id=order.OrderID) }}" class="btn btn-sm btn-outline-light mb-2">
+                📄 Download Order Details
+              </a>
+            {% else %}
+              <button class="btn btn-sm btn-secondary mb-2" disabled>🚫 Not Available</button>
+            {% endif %}
+
+            {% if order.can_edit %}
+              <div class="text-end mb-2">
+                <a href="{{ url_for('edit_order', order_id=order.OrderID) }}" class="btn btn-sm btn-manage me-2">✏️ Edit</a>
+                <form action="{{ url_for('cancel_order', order_id=order.OrderID) }}" method="post" style="display:inline;">
+                  <button type="submit" class="btn btn-sm btn-danger"
+                    onclick="return confirm('Are you sure you want to cancel this order?');">
+                    ❌ Cancel
+                  </button>
+                </form>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center">You don’t have any orders yet.</div>
+  {% endif %}
+
+  <div class="text-center mt-4">
+    <a href="{{ url_for('products') }}" class="btn btn-light px-4 py-2">← Back to Shop</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- Mobile Menu Script -->
+  <script>
+    // Mobile menu toggle
+    const menuButton = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    
+    function toggleMenu() {
+      menuButton.classList.toggle('active');
+      mobileMenu.classList.toggle('active');
+      mobileMenuOverlay.classList.toggle('active');
+      document.body.classList.toggle('menu-open');
+    }
+    
+    if (menuButton) {
+      menuButton.addEventListener('click', toggleMenu);
+    }
+    
+    // Handle item removal
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.remove-item')) {
+        const button = e.target.closest('.remove-item');
+        const orderId = button.dataset.orderId;
+        const productId = button.dataset.productId;
+        
+        Swal.fire({
+          title: 'Remove Item',
+          text: 'Are you sure you want to remove this item from your order?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Yes, remove it!',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch(`/remove_order_item/${orderId}/${productId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                const orderCard = button.closest('.order-card');
+                const item = button.closest('.product-item');
+                
+                // Remove the item from the UI
+                item.remove();
+                
+                // If order is now empty, redirect to my_orders
+                if (data.order_empty) {
+                  window.location.href = '/my_orders';
+                } else {
+                  // Show success message
+                  Swal.fire({
+                    title: 'Success!',
+                    text: data.message,
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                  });
+                  
+                  // Reload the page after a short delay to update the order total
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 1000);
+                }
+              } else {
+                Swal.fire('Error', data.message || 'Failed to remove item', 'error');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              Swal.fire('Error', 'An error occurred while removing the item', 'error');
+            });
+          }
+        });
+      }
+    });
+    
+    if (mobileMenuOverlay) {
+      mobileMenuOverlay.addEventListener('click', toggleMenu);
+    }
+    
+    // Close menu when clicking on nav links
+    document.querySelectorAll('.mobile-menu .nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        if (menuButton) menuButton.classList.remove('active');
+        if (mobileMenu) mobileMenu.classList.remove('active');
+        if (mobileMenuOverlay) mobileMenuOverlay.classList.remove('active');
+        document.body.classList.remove('menu-open');
+      });
+    });
+  </script>
+</body>
+</html>

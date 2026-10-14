@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ product.name }} | Chickano's Vapeshop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    /* Mobile Menu Styles */
+    .navbar-toggler {
+      border: none;
+      padding: 0.5rem;
+      z-index: 1001;
+      position: relative;
+    }
+    
+    .navbar-toggler:focus {
+      box-shadow: none;
+      outline: none;
+    }
+    
+    .navbar-toggler .icon-bar {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background-color: #ffffff;
+      margin: 4px 0;
+      transition: all 0.3s ease;
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .icon-bar:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .icon-bar:nth-child(2) {
+      opacity: 0;
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .icon-bar:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+    
+    /* Cart Icon Styles */
+    /* Bottom Navigation Bar */
+    .bottom-navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #1a1a1a;
+      padding: 2px 0;
+      z-index: 1000;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+      display: none;
+      border-top: 1px solid #333;
+    }
+    
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .bottom-nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #FFD700; /* Gold text color */
+      text-decoration: none;
+      font-size: 0.6rem;
+      padding: 4px 0;
+      transition: all 0.2s ease;
+      flex: 1;
+      text-align: center;
+    }
+    
+    .bottom-nav-link i {
+      font-size: 1rem;
+      margin-bottom: 1px;
+      color: #FFD700; /* Gold icon color */
+      transition: all 0.2s ease;
+    }
+    
+    .bottom-nav-link:hover,
+    .bottom-nav-link.active {
+      color: #FFC000; /* Slightly darker gold on hover/active */
+    }
+    
+    .bottom-nav-link:hover i,
+    .bottom-nav-link.active i {
+      color: #FFC000; /* Slightly darker gold on hover/active */
+      transform: scale(1.1); /* Slight scale effect on hover */
+    }
+    
+    /* Make cart icon and text gold by default */
+    .bottom-nav-link[href*="my_orders"],
+    .bottom-nav-link[href*="my_orders"] i {
+      color: #ffcc00 !important;
+    }
+    
+    .bottom-nav-link.active,
+    .bottom-nav-link:hover {
+      color: #ffcc00;
+    }
+    
+    .bottom-nav-link.active i,
+    .bottom-nav-link:hover i {
+      color: #ffcc00;
+    }
+    
+    .cart-badge {
+      position: absolute;
+      top: -2px;
+      right: 8px;
+      background-color: #ffcc00;
+      color: #000;
+      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.5rem;
+      font-weight: bold;
+      line-height: 1;
+    }
+    
+    .mobile-menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.95);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .mobile-menu-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 300px;
+      height: 100%;
+      background-color: #1a1a1a;
+      z-index: 1000;
+      padding: 80px 20px 30px;
+      transition: right 0.3s ease;
+      overflow-y: auto;
+    }
+    
+    .mobile-menu.show {
+      right: 0;
+    }
+    
+    .mobile-menu .nav-link {
+      display: block;
+      padding: 15px 0;
+      color: #fff !important;
+      font-size: 1.1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .mobile-menu .btn-yellow {
+      display: block;
+      margin: 20px 0;
+      text-align: center;
+      width: 100%;
+    }
+
+    body {
+      background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)),
+                  url("https://bgfons.com/uploads/smoke/smoke_texture2741.jpg") center/cover no-repeat;
+      font-family: 'Montserrat', sans-serif;
+      color: #ffffff;
+      overflow-x: hidden;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: rgba(20,20,20,0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .navbar-brand img {
+      height: 40px;
+      margin-right: 8px;
+    }
+
+    .navbar-brand span {
+      color: #ffffff;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-link {
+      color: #e0e0e0 !important;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: #fff !important;
+    }
+
+    /* Product Section */
+    .product-detail {
+      padding: 80px 20px;
+    }
+
+    .product-card {
+      background: rgba(30, 30, 30, 0.7);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      padding: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .product-card:hover {
+      box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+    }
+
+    .product-img {
+      width: 100%;
+      border-radius: 14px;
+      box-shadow: 0 0 25px rgba(255,255,255,0.1);
+      transition: transform 0.4s ease;
+    }
+
+    .product-img:hover {
+      transform: scale(1.02);
+    }
+
+    .product-title {
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+
+    .product-description {
+      color: #ccc;
+      font-size: 1.05rem;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .price {
+      color: #ffffff;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .btn-yellow {
+      background-color: #ffffff;
+      color: #000;
+      font-weight: 600;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-yellow:hover {
+      background-color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline-light {
+      border-color: #fff;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-light:hover {
+      background-color: #fff;
+      color: #000;
+    }
+
+    /* Related Products */
+    .related-section {
+      padding: 80px 0;
+      background-color: rgba(15, 15, 15, 0.95);
+    }
+
+    .related-section h3 {
+      text-align: center;
+      color: #ffffff;
+      font-weight: 700;
+      margin-bottom: 50px;
+    }
+
+    .card {
+      background-color: rgba(40, 40, 40, 0.85);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(255,255,255,0.2);
+    }
+
+    .card img {
+      height: 200px;
+      object-fit: cover;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .card-title {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .card-text {
+      color: #bbb;
+    }
+
+    /* Style for related product links */
+    .related-section a {
+      text-decoration: none !important;
+      color: inherit !important;
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .related-section a:hover,
+    .related-section a:focus,
+    .related-section a:active,
+    .related-section a:visited {
+      text-decoration: none !important;
+      color: inherit !important;
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    
+    .related-section .card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(30, 30, 30, 0.7);
+      color: #fff;
+    }
+    
+    .related-section .card-body {
+      padding: 1rem;
+    }
+    
+    .related-section .card-title {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .related-section .card-text {
+      color: #bbb;
+      margin-bottom: 0.5rem;
+    }
+    
+    .related-section .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Target all text within the related section */
+    .related-section,
+    .related-section * {
+      text-decoration: none !important;
+    }
+
+    /* Footer Styles */
+    .footer {
+      background-color: #000;
+      color: #bbb;
+      padding: 60px 0;
+      margin-top: 80px;
+    }
+
+    .footer h5, .footer h6 {
+      color: #ffffff;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .footer a {
+      color: #ffffff;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer a:hover {
+      color: #ffffff;
+      text-decoration: underline;
+    }
+
+    .footer small {
+      color: #777;
+    }
+
+    .social-links a {
+      display: inline-block;
+      width: 36px;
+      height: 36px;
+      line-height: 36px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      background: #ffffff;
+      color: #000 !important;
+      text-decoration: none !important;
+    }
+
+    /* Back to Top Button */
+    #backToTop {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: none;
+      z-index: 99;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    #backToTop:hover {
+      background-color: #e6e6e6;
+    }
+
+    footer {
+      background-color: #ffffff;
+      color: #aaa;
+      text-align: center;
+      padding: 25px 0;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    @media (max-width: 768px) {
+      .product-detail { 
+        padding: 60px 10px 80px; /* Added bottom padding for bottom nav */
+      }
+      .product-title { font-size: 1.5rem; }
+      .product-card { padding: 1.5rem; }
+      
+      /* Show bottom nav on mobile */
+      .bottom-navbar {
+        display: block;
+      }
+      
+      /* Hide cart icon in top nav on mobile */
+      .navbar .nav-link[title="My Cart"] {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- 🔹 Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top border-bottom border-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold text-yellow d-flex align-items-center me-auto" href="{{ url_for('products') if session.get('user_id') else url_for('login') }}">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Chickano's Vapeshop logo" class="brand-logo me-2">
+      <span>Chickano's Vapeshop</span>
+    </a>
+    <button class="navbar-toggler" type="button" aria-label="Toggle navigation" id="mobileMenuButton">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center d-none d-lg-flex">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('products') }}">Shop</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('about') if session.get('user_id') else url_for('login', next='about') }}">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#contact">Contact</a>
+        </li>
+        {% if session.get('user_id') %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+          </li>
+          <li class="nav-item ms-lg-3">
+            <a href="{{ url_for('my_orders') }}" class="btn btn-yellow btn-sm d-none d-lg-inline-block">📦 My Orders</a>
+          </li>
+          <li class="nav-item ms-lg-2">
+            <a href="{{ url_for('LT_Products') }}" class="btn btn-outline-light btn-sm d-none d-lg-inline-block">☀️ Light Mode</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('login', next='products') }}">Login</a>
+          </li>
+        {% endif %}
+      </ul>
+      
+      <!-- Search form -->
+      <form method="get" action="{{ url_for('products') }}" class="d-flex mt-3 mt-lg-0 ms-lg-3" role="search">
+        <input class="form-control form-control-sm me-2" type="text" name="search" placeholder="Search vape products..." value="">
+        <button class="btn btn-yellow btn-sm" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu Overlay -->
+<div class="mobile-menu-overlay"></div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu">
+  <a href="{{ url_for('products') }}" class="nav-link">Shop</a>
+  <a href="{{ url_for('about') if session.get('user_id') else url_for('login', next='about') }}" class="nav-link">About</a>
+  <a href="#contact" class="nav-link">Contact</a>
+  {% if session.get('user_id') %}
+    <a href="{{ url_for('my_orders') }}" class="nav-link">My Orders</a>
+    <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+  {% else %}
+    <a href="{{ url_for('LT_Products') }}" class="nav-link">☀️ Light Mode</a>
+    <a href="{{ url_for('login', next='products') }}" class="nav-link">Login</a>
+    <a href="{{ url_for('LT_Products') }}" class="nav-link">☀️ Light Mode</a>
+  {% endif %}
+</div>
+
+<!-- Bottom Navigation Bar -->
+<div class="bottom-navbar d-lg-none">
+  <!-- Search Bar (initially hidden) -->
+  <div class="mobile-search-container" id="mobileSearchContainer" style="display: none;">
+    <form method="get" action="{{ url_for('products') }}" class="mobile-search-form">
+      <div class="input-group">
+        <input type="text" 
+               class="form-control mobile-search-input" 
+               name="search" 
+               placeholder="Search products..." 
+               autocomplete="off">
+        <button class="btn btn-yellow mobile-search-submit" type="submit">
+          <i class="bi bi-search"></i>
+        </button>
+        <button type="button" class="btn btn-outline-secondary mobile-search-close" id="closeMobileSearch">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+    </form>
+    <div class="search-suggestions" id="searchSuggestions"></div>
+  </div>
+  
+  <!-- Bottom Navbar -->
+  <div class="bottom-nav">
+    <a href="{{ url_for('products') }}" class="bottom-nav-link">
+      <i class="bi bi-house-door"></i>
+      <span>Home</span>
+    </a>
+    <a href="{{ url_for('my_orders') if session.get('user_id') else url_for('login') }}" class="bottom-nav-link">
+      <i class="bi bi-bag"></i>
+      <span>Orders</span>
+    </a>
+    <a href="{{ url_for('LT_Product_details', product_id=product.id) }}" class="bottom-nav-link">
+      <i class="bi bi-sun"></i>
+      <span>Light Mode</span>
+    </a>
+  </div>
+</div>
+
+<!-- 🔹 Product Detail -->
+<section class="product-detail">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6 mb-4 mb-md-0">
+        <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-img">
+      </div>
+
+      <div class="col-md-6">
+        <div class="product-card">
+          <h2 class="product-title">{{ product.name }}</h2>
+          <p class="product-description">{{ product.description }}</p>
+          <p class="price">₱{{ product.price }}</p>
+          <p class="mb-3">Stock available: {{ product.stock }}</p>
+
+          <form action="{{ url_for('add_to_order') }}" method="post">
+            <input type="hidden" name="product_id" value="{{ product.id }}">
+            <div class="mb-3">
+              <label for="quantity" class="form-label">Quantity:</label>
+              <input type="number" class="form-control" id="quantity" name="quantity" min="1" max="{{ product.stock }}" value="1" required>
+            </div>
+            <button type="submit" class="btn btn-yellow w-100" id="addToOrderBtn">
+              <i class="bi bi-cart-plus me-2"></i>Add to Order
+            </button>
+          </form>
+
+          <a href="{{ url_for('products') }}" class="btn btn-outline-light w-100 mt-3">← Back to Products</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 🔹 Related Products -->
+<section class="related-section">
+  <div class="container">
+    <h3>Suggested Products You Might Like</h3>
+    <div class="row g-4">
+      {% for item in related_products %}
+      <div class="col-6 col-md-4 col-lg-3">
+        <a href="{{ url_for('product_detail', product_id=item.id) }}">
+          <div class="card h-100 text-center">
+            <img src="{{ item.image_url }}" alt="{{ item.name }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ item.name }}</h5>
+              <p class="card-text">{{ item.description[:60] }}...</p>
+              <p class="fw-bold text-white mb-0">₱{{ item.price }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% else %}
+      <div class="col-12 text-center">
+        <p class="text-muted">No related products available.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- 🔹 Footer -->
+<footer class="footer" id="contact">
+  <div class="container">
+    <div class="row text-center text-md-start">
+      <div class="col-md-4 mb-4">
+        <h5>Chickano's Vapeshop</h5>
+        <p>Your trusted partner for premium vaping products and accessories.</p>
+      </div>
+      <div class="col-md-4 mb-4">
+        <h6>Customer Service</h6>
+        <ul class="list-unstyled">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Track Order</a></li>
+          <li><a href="#">Returns & Refunds</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4 mb-4">
+        <h6>Connect</h6>
+        <p>Email: chickanos.vapelounge@gmail.com</p>
+        <p><a href="https://www.facebook.com/chickanosvapeloungeofficial">Facebook</a> | <a href="https://www.instagram.com/chickanosvapelounge">Instagram</a></p>
+      </div>
+      <div>
+        <span>16 Papaya Road, Cabanatuan City, Philippines</span>
+        <span class="ms-3">📦 FREE Returns</span>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <small> 2025 Chickano's Vapeshop. All rights reserved.</small>
+    </div>
+  </div>
+</footer>
+
+<!-- Back to Top Button -->
+<button id="backToTop" class="btn btn-yellow">↑</button>
+
+<!-- Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Mobile Menu Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuButton = document.querySelector('.navbar-toggler');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const mobileMenuOverlay = document.querySelector('.mobile-menu-overlay');
+    
+    function toggleMenu() {
+      menuButton.classList.toggle('active');
+      mobileMenu.classList.toggle('show');
+      mobileMenuOverlay.classList.toggle('show');
+      document.body.style.overflow = mobileMenu.classList.contains('show') ? 'hidden' : '';
+    }
+    
+    menuButton.addEventListener('click', toggleMenu);
+    mobileMenuOverlay.addEventListener('click', toggleMenu);
+    
+    // Close menu when clicking on nav links
+    document.querySelectorAll('.mobile-menu .nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        toggleMenu();
+      });
+    });
+    
+    // Update menu button state on window resize
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 991.98) {
+        menuButton.classList.remove('active');
+        mobileMenu.classList.remove('show');
+        mobileMenuOverlay.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+    });
+  });
+</script>
+
+{% if session.swal %}
+<script>
+  Swal.fire({
+    title: "{{ session.swal.title }}",
+    text: "{{ session.swal.text }}",
+    icon: "{{ session.swal.icon }}",
+    confirmButtonColor: "#ffffff"
+  });
+</script>
+{% set _ = session.pop('swal') %}
+{% endif %}
+</body>
+</html>

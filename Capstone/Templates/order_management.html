@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Management - Chickano's Vapeshop</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+
+  <style>
+    /* ====== BASE ====== */
+    body {
+      background: radial-gradient(circle at center, #111 0%, #000 100%);
+      color: #f1f1f1;
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Smoke overlay effect */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://bgfons.com/uploads/smoke/smoke_texture2741.jpg') repeat;
+      background-size: cover;
+      opacity: 0.25;
+      z-index: -1;
+    }
+    .navbar {
+      background-color: rgba(0, 0, 0, 0.85);
+      border-bottom: 2px solid #555555;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
+    }
+    .navbar-brand {
+      color: #ffffff !important;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .nav-link {
+      color: #f1f1f1 !important;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .nav-link.active, .nav-link:hover {
+      color: #6c6a6a !important;
+    }
+    .btn-light {
+      background: #ffffff;
+      color: #000;
+      border: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn-light:hover {
+      background: #828281;
+      transform: scale(1.05);
+    }
+
+    /* ====== PAGE TITLE ====== */
+    h2 {
+      color: #ffffff;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-bottom: 40px;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    }
+
+    /* ====== FLASH MESSAGES ====== */
+    .alert {
+      border: none;
+      border-left: 5px solid #bbbbbb;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.4);
+      background: rgba(30,30,30,0.95);
+      color: #fff;
+    }
+
+    /* ====== TABLE ====== */
+    .table {
+      background: rgba(255, 255, 255, 0.9);
+      color: #585858;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+    }
+    .table thead {
+      background: #8f8f8f;
+      color: #000;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .table tbody tr:hover {
+      background: rgba(255,180,0,0.1);
+    }
+    .details-table {
+      background: rgba(15,15,15,0.95);
+    }
+    .details-table thead {
+      background: rgba(255,180,0,0.2);
+      color: #ffb400;
+    }
+    .details-table tbody td {
+      color: #f1f1f1;
+    }
+
+    /* ====== BADGES ====== */
+    .badge {
+      font-size: 0.85rem;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    /* ====== BUTTONS ====== */
+    .btn-sm {
+      border-radius: 8px;
+      font-weight: 600;
+      border: none;
+      transition: all 0.3s ease;
+    }
+    .btn-approve {
+      background-color: #28a745;
+      color: white;
+    }
+    .btn-approve:hover {
+      background-color: #34ce57;
+      transform: scale(1.05);
+    }
+    .btn-decline {
+      background-color: #dc3545;
+      color: white;
+    }
+    .btn-decline:hover {
+      background-color: #ff4b5c;
+      transform: scale(1.05);
+    }
+    .btn-pickup {
+      background-color: #0d6efd;
+      color: white;
+    }
+    .btn-pickup:hover {
+      background-color: #2b75ff;
+      transform: scale(1.05);
+    }
+    .btn-cancel {
+      background-color: #6c757d;
+      color: white;
+    }
+    .btn-cancel:hover {
+      background-color: #8a9299;
+      transform: scale(1.05);
+    }
+    .btn-info {
+      background-color: #ffb400;
+      color: #000;
+      font-weight: 600;
+    }
+    .btn-info:hover {
+      background-color: #fff;
+      transform: scale(1.05);
+    }
+
+    /* ====== COLLAPSE DETAILS ====== */
+    tr.collapse td {
+      background: rgba(10,10,10,0.9);
+      border-top: 2px solid #ffb400;
+    }
+
+    /* ====== RESPONSIVE ====== */
+    @media (max-width: 768px) {
+      .table {
+        font-size: 0.85rem;
+      }
+      .btn-sm {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar py-2 px-3" style="background-color:#000; color:#fff; font-size:13px;">
+  <div class="container d-flex justify-content-between">
+    <span>Logged In As : 📧 {{ session['email'] }}</span>
+  </div>
+  </div>
+
+{% if session.get('role_id') == 3 %}
+<!-- Employee Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: linear-gradient(90deg, #000, #222, #000); border-bottom: 2px solid #202020; box-shadow: 0 0 15px rgba(123, 123, 123, 0.5);">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('emp_dashboard') }}">Chickano's Vapeshop - Employee</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('emp_dashboard') }}">📊 Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ url_for('order_management') }}">🛒 Order Management</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('transactions_page') }}">💰 Transactions</a>
+        </li>
+      </ul>
+      <div class="d-flex ms-auto">
+        <span class="navbar-text me-3 text-white">Logged in as: <strong>{{ session['email'] }}</strong></span>
+        <a class="btn btn-light btn-sm" href="{{ url_for('logout') }}">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+{% else %}
+<!-- Admin Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: linear-gradient(90deg, #000, #222, #000); border-bottom: 2px solid #202020; box-shadow: 0 0 15px rgba(123, 123, 123, 0.5);">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('dashboard') }}">Chickano's Vapeshop - Admin</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('dashboard') }}">📊 Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ url_for('order_management') }}">🛒 Order Management</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('transactions_page') }}">💰 Transactions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('manage_products') }}">📦 Manage Products</a>
+        </li>
+      </ul>
+      <div class="d-flex ms-auto">
+        <span class="navbar-text me-3 text-white">Logged in as: <strong>{{ session['email'] }}</strong></span>
+        <a class="btn btn-light btn-sm" href="{{ url_for('logout') }}">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+{% endif %}
+
+<div class="container py-5">
+  <h2>Order Management</h2>
+
+  <!-- ✅ Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% if orders %}
+  <table class="table table-bordered table-striped align-middle">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Date</th>
+        <th>Customer</th>
+        <th>Email</th>
+        <th>Order Status</th>
+        <th>Pickup Status</th>
+        <th>Total</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+      <tr>
+        <td>{{ order.id }}</td>
+        <td>{{ order.date }}</td>
+        <td>{{ order.customer }}</td>
+        <td>{{ order.email }}</td>
+
+        <!-- Order Status -->
+        <td>
+          <span class="badge 
+            {% if order.order_status == 'Approved' %}bg-success
+            {% elif order.order_status == 'Declined' %}bg-danger
+            {% else %}bg-warning text-dark{% endif %}">
+            {{ order.order_status }}
+          </span>
+        </td>
+
+        <!-- Pickup Status -->
+        <td>
+          <span class="badge 
+            {% if order.pickup_status == 'Already Picked Up' %}bg-primary
+            {% elif order.pickup_status == 'Waiting for Pickup' %}bg-info text-dark
+            {% elif order.pickup_status == 'Cancelled' %}bg-secondary
+            {% else %}bg-light text-dark{% endif %}">
+            {{ order.pickup_status }}
+          </span>
+        </td>
+
+        <td>₱{{ order.total }}</td>
+
+        <!-- ✅ Actions -->
+        <td>
+          {% if order.order_status == 'Pending' %}
+            <form action="{{ url_for('update_order', order_id=order.id, action='approve') }}" method="post" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-approve">Approve</button>
+            </form>
+            <form action="{{ url_for('update_order', order_id=order.id, action='decline') }}" method="post" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-decline">Decline</button>
+            </form>
+          {% endif %}
+
+          {% if order.order_status == 'Approved' %}
+            {% if order.pickup_status == 'Waiting for Pickup' %}
+              <form action="{{ url_for('update_pickup', order_id=order.id, status='Already Picked Up') }}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-sm btn-pickup">Mark Picked Up</button>
+              </form>
+              <form action="{{ url_for('update_pickup', order_id=order.id, status='Cancelled') }}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-sm btn-cancel">Cancel</button>
+              </form>
+            {% else %}
+              <button type="button" class="btn btn-sm btn-secondary" disabled>Finalized</button>
+            {% endif %}
+          {% endif %}
+
+          <button class="btn btn-sm btn-info ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#details{{ order.id }}">
+            View Details
+          </button>
+        </td>
+      </tr>
+
+      <!-- Collapsible Order Details -->
+      <tr class="collapse" id="details{{ order.id }}">
+        <td colspan="8">
+          <table class="table table-sm details-table mb-0">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in order.details %}
+              <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>₱{{ item.price }}</td>
+                <td>₱{{ item.subtotal }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="text-center text-warning">⚠ No orders found.</p>
+  {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

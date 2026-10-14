@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Orders - Chickano's Vapeshop</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #d4af37;
+      --primary-hover: #b9972e;
+      --bg-light: #ffffff;
+      --text-dark: #222222;
+      --text-light: #ffffff;
+      --border-light: #e0e0e0;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f8f8f8;
+      color: var(--text-dark);
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .text-gold { color: #d4af37; }
+    .btn-gold {
+      background-color: #d4af37;
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      transition: 0.3s ease;
+    }
+    .btn-gold:hover {
+      background-color: #b9972e;
+      color: #fff;
+    }
+
+    h2 {
+      color: #1a1a1a;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Mobile Menu */
+    /* Mobile Menu */
+    #mobileMenu {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 280px;
+      height: 100%;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      padding: 20px;
+      transition: right 0.3s ease;
+      z-index: 1050;
+      overflow-y: auto;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+    }
+    
+    #mobileMenu.active {
+      right: 0;
+    }
+    
+    #mobileMenuOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1040;
+    }
+    
+    .mobile-menu .user-info {
+      padding: 15px 0;
+      border-bottom: 1px solid var(--border-light);
+      margin-bottom: 20px;
+      color: var(--text-dark);
+    }
+    
+    .mobile-menu .nav-link {
+      color: var(--text-dark) !important;
+      padding: 12px 15px;
+      border-radius: 6px;
+      margin: 5px 0;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+    
+    .mobile-menu .nav-link:hover {
+      background-color: rgba(0,0,0,0.05);
+      color: var(--primary-color) !important;
+      transform: translateX(5px);
+    }
+    
+    /* Navbar base styles */
+    .navbar {
+      background-color: #ffffff;
+      position: relative;
+      z-index: 1000;
+    }
+
+    /* Order Cards Section */
+    .order-card {
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-bottom: 1.5rem;
+      padding: 1.25rem;
+      border: 1px solid #eee;
+      transition: all 0.2s ease-in-out;
+      position: relative;
+      z-index: 1;
+      overflow: visible;
+    }
+
+    .order-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    .order-card h5 {
+      color: #222;
+      font-weight: 600;
+    }
+
+    .order-card .text-muted {
+      color: #666 !important;
+    }
+
+    .product-item {
+      display: flex;
+      align-items: center;
+      background-color: #fafafa;
+      padding: 10px 15px;
+      border-radius: 10px;
+      border: 1px solid #eee;
+      transition: 0.2s;
+      position: relative;
+      z-index: 2;
+    }
+
+    .product-item:hover {
+      background-color: #fff5e1;
+    }
+
+    .product-item img {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-right: 12px;
+    }
+
+    .badge {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .btn-manage {
+      background-color: transparent;
+      border: 1px solid #d4af37;
+      color: #d4af37;
+      transition: 0.3s;
+    }
+
+    .btn-manage:hover {
+      background-color: #d4af37;
+      color: #fff;
+    }
+
+    .btn-outline-primary {
+      color: #0d6efd;
+      border-color: #0d6efd;
+      z-index: 10;
+      position: relative;
+    }
+    .btn-outline-primary:hover {
+      color: #fff;
+      background-color: #0d6efd;
+      border-color: #0d6efd;
+    }
+
+    .btn-outline-secondary {
+      border-color: #d4af37 !important;
+      color: #d4af37 !important;
+    }
+    .btn-outline-secondary:hover {
+      background-color: #d4af37 !important;
+      color: #fff !important;
+    }
+
+    .alert-info {
+      background-color: #fff8e1;
+      border-color: #ffecb3;
+      color: #7a5c00;
+    }
+
+    /* Grid Layout for Orders */
+    .orders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .orders-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Logo */
+    .brand-logo {
+      height: 30px;
+      width: auto;
+    }
+
+    
+    /* Mobile Menu preserved */
+    .mobile-menu-overlay, .mobile-menu { transition: all 0.3s ease; }
+    
+    /* Custom hamburger menu icon */
+    .navbar-toggler {
+      border: none;
+      padding: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .navbar-toggler:focus {
+      box-shadow: none;
+      outline: none;
+    }
+    
+    .navbar-toggler-bar {
+      display: block;
+      width: 25px;
+      height: 2px;
+      background-color: #000000;
+      margin: 6px 0;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .navbar-toggler-bar:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .navbar-toggler-bar:nth-child(2) {
+      opacity: 0;
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .navbar-toggler-bar:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light sticky-top" style="background: #ffffff !important; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+  <div class="container">
+    <a class="navbar-brand fw-bold d-flex align-items-center me-auto" href="{{ url_for('LT_Products') if session.get('user_id') else url_for('login') }}" style="color: #000000;">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Chickano's Vapeshop logo" class="brand-logo me-2" style="height: 30px;">
+      <span class="sm-inline">Chickano's Vapeshop</span>
+    </a>
+    
+    <div class="d-flex align-items-center">
+      <button class="navbar-toggler ms-3 d-lg-none" type="button" onclick="toggleMenu()" style="border: none;">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item mx-2">
+          <a class="nav-link fw-medium" href="{{ url_for('LT_Products') }}" style="color: #333333;">
+            Shop
+          </a>
+        </li>
+        <li class="nav-item mx-2">
+          <a class="nav-link fw-medium" href="{{ url_for('about') if session.get('user_id') else url_for('login', next=url_for('about')) }}" style="color: #333333;">
+            About
+          </a>
+        </li>
+        <li class="nav-item mx-2">
+          <a class="nav-link fw-medium" href="#contact" style="color: #333333;">
+            Contact
+          </a>
+        </li>
+        {% if session.get('user_id') %}
+          <li class="nav-item mx-2">
+            <a href="{{ url_for('LT_my_orders') }}" class="nav-link fw-medium" style="color: #333333;">
+              <i class="bi bi-bag"></i> My Orders
+            </a>
+          </li>
+          <li class="nav-item ms-2">
+            <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline-dark rounded-pill px-3">
+              Logout
+            </a>
+          </li>
+        {% else %}
+          <li class="nav-item ms-2">
+            <a href="{{ url_for('login', next=url_for('LT_Products')) }}" class="btn btn-sm btn-dark rounded-pill px-3">
+              Login
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="user-info">
+    {% if session.get('email') %}
+      <div class="text-black small mb-2">Logged in as: {{ session['email'] }}</div>
+    {% endif %}
+  </div>
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('LT_Products') }}">Shop</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">About</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#contact">Contact</a>
+    </li>
+    {% if session.get('user_id') %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('LT_my_orders') }}">My Orders</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+      </li>
+    {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+      </li>
+    {% endif %}
+  </ul>
+</div>
+
+<!-- Overlay for mobile menu -->
+<div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="toggleMenu()"></div>
+
+<style>
+  /* Navbar styles */
+  .navbar {
+    padding: 1rem 0;
+    background-color: #ffffff !important;
+  }
+  
+  .nav-link {
+    padding: 0.5rem 1rem;
+    transition: color 0.2s ease;
+    color: #000000 !important;
+  }
+  
+  .nav-link:hover {
+    color: #000000 !important;
+  }
+  
+  .btn-outline-dark {
+    border-color: #333333;
+    color: #333333;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-outline-dark:hover {
+    background-color: #333333;
+    color: #ffffff;
+  }
+  
+  .btn-dark {
+    background-color: #333333;
+    border: none;
+    transition: all 0.2s ease;
+  }
+  
+  .btn-dark:hover {
+    background-color: #000000;
+    transform: translateY(-1px);
+  }
+  
+  .navbar-toggler:focus {
+    box-shadow: none;
+  }
+  
+  @media (max-width: 991.98px) {
+    .navbar-collapse {
+      padding: 1rem 0;
+    }
+    
+    .nav-item {
+      margin: 0.25rem 0;
+    }
+    
+    .btn {
+      margin-top: 0.5rem;
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>
+
+<!-- Mobile Menu -->
+
+  <div class="container py-4" style="position: relative; z-index: 5;">
+    <h2 class="text-center mb-4 text-gold">📦 My Orders</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if orders and orders|length > 0 %}
+      <div class="orders-grid">
+        {% for order in orders %}
+          <div class="order-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="mb-0">Order #{{ order.OrderID }}</h5>
+              <div class="d-flex align-items-center">
+                <span class="badge bg-{{ 'warning' if order.Order_Status == 'Pending' else 'success' }} me-2">
+                  {{ order.Order_Status }}
+                </span>
+                {% if order.Order_Status == 'Pending' and order.can_edit %}
+                <a href="{{ url_for('edit_order', order_id=order.OrderID) }}" class="btn btn-sm btn-outline-primary">
+                  <i class="bi bi-pencil-square me-1"></i> Edit Order
+                </a>
+                {% endif %}
+              </div>
+            </div>
+            <small class="text-muted">Date: {{ order.Order_Date }}</small>
+            <hr>
+
+            {% if order['items'] %}
+              {% set first = order['items'][0] %}
+              <div class="product-item mb-2">
+                <img src="{{ first.image }}" alt="{{ first.name }}">
+                <div class="flex-grow-1">
+                  <p class="mb-1 fw-semibold">{{ first.name }}</p>
+                  <small>Qty: {{ first.quantity }} × ₱{{ first.price }}</small>
+                </div>
+                {% set remaining = order['items']|length - 1 %}
+                {% if remaining > 0 %}
+                  <span class="badge bg-light text-dark ms-2">+{{ remaining }} more</span>
+                {% endif %}
+              </div>
+            {% endif %}
+
+            <hr>
+            <div class="d-flex justify-content-between align-items-center">
+              <strong>Total: ₱{{ order.TotalPrice }}</strong>
+              <a class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" href="#details{{ order.OrderID }}">
+                Details
+              </a>
+            </div>
+
+            <div class="collapse mt-3" id="details{{ order.OrderID }}">
+              {% for item in order['items'] %}
+                <div class="product-item mb-2">
+                  <img src="{{ item.image }}" alt="{{ item.name }}">
+                  <div class="flex-grow-1">
+                    <p class="mb-1 fw-semibold">{{ item.name }}</p>
+                    <small>Qty: {{ item.quantity }} × ₱{{ item.price }}</small>
+                  </div>
+                </div>
+              {% endfor %}
+              <hr>
+              <div class="text-end">
+                {% if order.Order_Status == 'Approved' %}
+                  <a href="{{ url_for('download_order', order_id=order.OrderID) }}" class="btn btn-sm btn-outline-secondary me-2">📄 Download</a>
+                {% else %}
+                  <button class="btn btn-sm btn-secondary" disabled>🚫 Not Available</button>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-info text-center">You don’t have any orders yet.</div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+      <a href="{{ url_for('products') }}" class="btn btn-gold px-4 py-2">← Back to Shop</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- Bottom Navigation (Mobile) -->
+  <div class="bottom-navbar d-lg-none">
+    <div class="mobile-search-container" id="mobileSearchContainer" style="display: none;">
+      <form method="get" action="{{ url_for('LT_Products') }}" class="mobile-search-form">
+        <div class="input-group">
+          <input type="text"
+                 class="form-control mobile-search-input"
+                 name="search"
+                 placeholder="Search products..."
+                 autocomplete="off">
+          <button class="btn btn-yellow mobile-search-submit" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+          <button type="button" class="btn btn-outline-secondary mobile-search-close" id="closeMobileSearch">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+      </form>
+      <div class="search-suggestions" id="searchSuggestions"></div>
+    </div>
+
+    <!-- Bottom Navbar -->
+    <div class="bottom-nav">
+      <a href="{{ url_for('LT_Products') }}" class="bottom-nav-link">
+        <i class="bi bi-house-door"></i>
+        <span>Home</span>
+      </a>
+      <a href="{{ url_for('LT_my_orders') if session.get('user_id') else url_for('login') }}" class="bottom-nav-link">
+        <i class="bi bi-bag"></i>
+        <span>Orders</span>
+      </a>
+      <a href="{{ url_for('products') }}" class="bottom-nav-link">
+        <i class="bi bi-moon"></i>
+        <span>Dark Mode</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Mobile menu state
+    let isMenuOpen = false;
+    
+    function toggleMenu() {
+      const menu = document.getElementById('mobileMenu');
+      const overlay = document.getElementById('mobileMenuOverlay');
+      
+      isMenuOpen = !isMenuOpen;
+      
+      if (menu && overlay) {
+        if (isMenuOpen) {
+          menu.classList.add('active');
+          overlay.style.display = 'block';
+          document.body.style.overflow = 'hidden';
+          document.addEventListener('click', closeOnOutsideClick);
+        } else {
+          menu.classList.remove('active');
+          overlay.style.display = 'none';
+          document.body.style.overflow = '';
+          document.removeEventListener('click', closeOnOutsideClick);
+        }
+      }
+    }
+    
+    function closeOnOutsideClick(e) {
+      const menu = document.getElementById('mobileMenu');
+      const button = document.querySelector('.navbar-toggler');
+      
+      if (isMenuOpen && 
+          !menu.contains(e.target) && 
+          !button.contains(e.target)) {
+        toggleMenu();
+      }
+    }
+    
+    // Initialize menu on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Close menu when clicking on overlay
+      const overlay = document.getElementById('mobileMenuOverlay');
+      if (overlay) {
+        overlay.addEventListener('click', toggleMenu);
+      }
+      
+      // Close menu when clicking on menu links
+      const menuLinks = document.querySelectorAll('#mobileMenu .nav-link');
+      menuLinks.forEach(link => {
+        link.addEventListener('click', toggleMenu);
+      });
+      
+      // Close menu when pressing Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && isMenuOpen) {
+          toggleMenu();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

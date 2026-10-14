@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Products - Chickano's Vapeshop</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <style>
+    /* ======== BACKGROUND & BASE ======== */
+    body {
+      background: radial-gradient(circle at top, #1a1a1a 0%, #000 80%);
+      color: #f5f5f5;
+      font-family: 'Poppins', sans-serif;
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    body::before, body::after {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 200%;
+      height: 200%;
+      background: url('https://bgfons.com/uploads/smoke/smoke_texture2741.jpg') repeat;
+      background-size: cover;
+      opacity: 0.08;
+      z-index: -2;
+    }
+    body::after {
+      animation-direction: reverse;
+      opacity: 0.12;
+    }
+    .navbar {
+      background: linear-gradient(90deg, #000, #222, #000);
+      border-bottom: 2px solid #202020;
+      box-shadow: 0 0 15px rgba(123, 123, 123, 0.5);
+    }
+
+    .navbar-brand, .nav-link {
+      color: #f8f9fa !important;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      font-size: 0.85rem; /* Smaller font size */
+    }
+    
+    .navbar-brand {
+      font-size: 1rem; /* Slightly larger for brand */
+    }
+
+    .nav-link.active {
+      color: #9e9e9e !important;
+    }
+
+    .btn-light {
+      background-color: #fefefe;
+      border: none;
+      color: rgb(84, 84, 84);
+      font-weight: 500;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+      transition: 0.3s;
+    }
+    .btn-light:hover {
+      background-color: #7b7b7b;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
+    }
+
+    /* ======== CONTENT ======== */
+    h2 {
+      color: #ffffff;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.7);
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .btn-success {
+      background-color: #ffffff;
+      border: none;
+      color: rgb(90, 90, 90);
+    }
+    .btn-success:hover {
+      background-color: #767676;
+    }
+
+    .table {
+      background-color: rgba(20, 20, 20, 0.8);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #eaeaea;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    }
+
+    .table thead {
+      background: linear-gradient(90deg, #111, #222);
+      color: #fd7e14;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+
+    .table tbody tr:hover {
+      background-color: rgba(253,126,20,0.1);
+      transition: 0.2s ease-in-out;
+    }
+
+    td, th {
+      border-color: rgba(255,255,255,0.1) !important;
+      vertical-align: middle;
+    }
+
+    img {
+      max-height: 60px;
+      border-radius: 6px;
+      box-shadow: 0 0 5px rgba(253,126,20,0.4);
+    }
+
+    /* Toast styling */
+    .toast-container {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1100;
+    }
+
+    .toast {
+      background-color: rgba(0,0,0,0.85);
+      color: #fff;
+      border: 1px solid rgba(253,126,20,0.6);
+      box-shadow: 0 0 8px rgba(253,126,20,0.5);
+    }
+
+    /* Modal Styling */
+    .modal-content {
+      background-color: #111;
+      color: #fff;
+      border: 1px solid rgba(253,126,20,0.3);
+      box-shadow: 0 0 20px rgba(253,126,20,0.5);
+    }
+
+    .modal-header.bg-danger {
+      background-color: #fd7e14 !important;
+    }
+
+    p.text-muted {
+      color: #aaa !important;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background: linear-gradient(90deg, #000, #222, #000); border-bottom: 2px solid #202020; box-shadow: 0 0 15px rgba(123, 123, 123, 0.5);">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('dashboard') }}">Chickano's Vapeshop - Admin</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('dashboard') }}">📊 Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('order_management') }}">🛒 Order Management</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('transactions_page') }}">💰 Transactions</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ url_for('manage_products') }}">📦 Manage Products</a>
+        </li>
+      </ul>
+      <div class="d-flex ms-auto">
+        <span class="navbar-text me-3 text-white">Logged in as: <strong>{{ session['email'] }}</strong></span>
+        <a class="btn btn-light btn-sm" href="{{ url_for('logout') }}">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4">
+  <h2 class="mb-4 text-center">🛍️ Manage Products</h2>
+
+  <!-- ✅ Toast Flash Messages -->
+  <div class="toast-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+        <div class="toast align-items-center text-white bg-{{ 'success' if category=='success' else 'danger' if category=='danger' else 'primary' }} border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body">
+              {{ message }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Action Buttons and Search -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <a href="{{ url_for('add_product') }}" class="btn btn-success">
+      <i class="bi bi-plus-circle"></i> Add Product
+    </a>
+    
+    <div class="d-flex" style="max-width: 400px;">
+      <input type="text" id="searchInput" class="form-control form-control-sm bg-dark text-light border-secondary" 
+             placeholder="Search products..." onkeyup="filterProducts()">
+      <button class="btn btn-outline-secondary ms-2" type="button" onclick="filterProducts()">
+        <i class="bi bi-search"></i> Search
+      </button>
+    </div>
+  </div>
+
+  {% if products %}
+  <table class="table table-bordered table-striped text-center">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Category</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for product in products %}
+      <tr>
+        <td>{{ product.id }}</td>
+        <td>
+          {% if product.image_url %}
+            <img src="{{ product.image_url }}" alt="Product Image">
+          {% else %}
+            <span class="text-muted">No Image</span>
+          {% endif %}
+        </td>
+        <td>{{ product.name }}</td>
+        <td>{{ product.description }}</td>
+        <td>₱{{ product.price }}</td>
+        <td>{{ product.stock }}</td>
+        <td>{{ product.category }}</td>
+        <td>
+          <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-sm btn-primary">Edit</a>
+          <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ product.id }}">
+            Delete
+          </button>
+        </td>
+      </tr>
+
+      <!-- Delete Confirmation Modal -->
+      <div class="modal fade" id="deleteModal{{ product.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ product.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+              <h5 class="modal-title" id="deleteModalLabel{{ product.id }}">Confirm Delete</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete <strong>{{ product.name }}</strong>?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <form action="{{ url_for('delete_product', product_id=product.id) }}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger">Yes, Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="text-center text-muted mt-4">No products found.</p>
+  {% endif %}
+</div>
+
+<!-- Search Functionality -->
+<script>
+function filterProducts() {
+  const input = document.getElementById('searchInput');
+  const filter = input.value.toLowerCase();
+  const table = document.querySelector('.table');
+  const tr = table.getElementsByTagName('tr');
+
+  // Loop through all table rows, and hide those that don't match the search query
+  for (let i = 1; i < tr.length; i++) {
+    // Skip the header row
+    if (i === 0) continue;
+    
+    let found = false;
+    const cells = tr[i].getElementsByTagName('td');
+    
+    // Check each cell in the row (except action buttons)
+    for (let j = 0; j < cells.length - 1; j++) {
+      const cell = cells[j];
+      if (cell) {
+        const textValue = cell.textContent || cell.innerText;
+        if (textValue.toLowerCase().indexOf(filter) > -1) {
+          found = true;
+          break;
+        }
+      }
+    }
+    
+    // Show/hide row based on search
+    tr[i].style.display = found ? '' : 'none';
+  }
+}
+
+// Initialize tooltips
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl)
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ✅ Auto-show Bootstrap toasts
+  const toastElList = [].slice.call(document.querySelectorAll('.toast'));
+  toastElList.map(function (toastEl) {
+    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+    toast.show();
+  });
+</script>
+</body>
+</html>

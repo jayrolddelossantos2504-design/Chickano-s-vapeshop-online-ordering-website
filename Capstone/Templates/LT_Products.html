@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chickano's Vapeshop - Light Mode</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    /* Mobile Menu Styles */
+    body.menu-open {
+      overflow: hidden;
+    }
+    
+    .navbar-toggler {
+      border: none;
+      padding: 0.5rem;
+      z-index: 1001;
+      position: relative;
+    }
+    
+    .navbar-toggler:focus {
+      box-shadow: none;
+      outline: none;
+    }
+    
+    .navbar-toggler .icon-bar {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background-color: #333333;
+      margin: 4px 0;
+      transition: all 0.3s ease;
+    }
+    
+    .mobile-menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .mobile-menu-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 280px;
+      height: 100%;
+      background-color: #ffffff;
+      z-index: 1000;
+      padding: 70px 20px 30px;
+      transition: right 0.3s ease;
+      overflow-y: auto;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .mobile-menu.show {
+      right: 0;
+    }
+    
+    .mobile-menu .nav-link {
+      display: block;
+      padding: 15px 0;
+      color: #333333 !important;
+      font-size: 1.1rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+    }
+    
+    .mobile-menu .nav-link:hover {
+      color: #000000 !important;
+      padding-left: 10px;
+    }
+    
+    .mobile-menu .btn-yellow {
+      display: block;
+      margin: 20px 0;
+      text-align: center;
+      width: 100%;
+    }
+    
+    .mobile-menu .form-control,
+    .mobile-menu .form-select {
+      width: 100%;
+      margin: 10px 0;
+      border: 1px solid #dddddd;
+    }
+
+    /* Base Styles */
+    :root {
+      --bg-color: #f8f9fa;
+      --text-color: #333333;
+      --card-bg: #ffffff;
+      --card-border: #e0e0e0;
+      --btn-bg: #ffcc00;
+      --btn-color: #000000;
+      --btn-hover-bg: #e6b800;
+      --text-muted: #6c757d;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    .text-yellow { color: #000000; font-weight: 700; }
+    .btn-yellow { 
+      background-color: var(--btn-bg); 
+      color: var(--btn-color); 
+      border: none; 
+      font-weight: 600; 
+      transition: all 0.3s ease;
+    }
+    .btn-yellow:hover { 
+      background-color: var(--btn-hover-bg); 
+      color: var(--btn-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: #ffffff !important;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .navbar .nav-link {
+      color: #555555 !important;
+      font-weight: 500;
+      margin-right: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .navbar .nav-link:hover {
+      color: #000000 !important;
+    }
+
+    .brand-logo {
+      height: 30px;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: url('https://cdn.pixabay.com/photo/2017/08/06/00/14/vape-2585886_1280.jpg') center/cover no-repeat;
+      position: relative;
+      text-align: center;
+      color: #ffffff;
+      padding: 140px 20px;
+      overflow: hidden;
+      margin-top: 0;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Categories */
+    .category-btn {
+      margin: 5px;
+      border-radius: 20px;
+      border: 1px solid #dddddd;
+      color: #555555;
+      background-color: transparent;
+      font-weight: 500;
+      padding: 6px 16px;
+      transition: all 0.3s ease;
+    }
+
+    .category-btn:hover,
+    .category-btn.active {
+      background-color: var(--btn-bg);
+      color: var(--btn-color);
+      border-color: var(--btn-bg);
+    }
+
+    /* Product Grid */
+    .product-section {
+      padding: 60px 0;
+      background-color: var(--bg-color);
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .product-title {
+      color: var(--text-color);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .product-description {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      flex-grow: 1;
+    }
+
+    .price {
+      color: #000000;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Bottom Navigation */
+    /* Bottom Navigation Bar */
+    .bottom-navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #1a1a1a;
+      z-index: 1000;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+      display: none;
+      border-top: 1px solid #333;
+      padding: 0;
+      transition: transform 0.3s ease;
+    }
+    
+    /* Hide bottom navbar on PC view */
+    @media (min-width: 769px) {
+      .bottom-navbar {
+        display: none !important;
+      }
+    }
+    
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 5px 20px;
+      background-color: #1a1a1a;
+    }
+    
+    .bottom-nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #FFD700;
+      text-decoration: none;
+      font-size: 0.6rem;
+      padding: 4px 0;
+      transition: all 0.2s ease;
+      flex: 1;
+      text-align: center;
+    }
+    
+    .bottom-nav-link i {
+      font-size: 1rem;
+      margin-bottom: 1px;
+      color: #FFD700;
+      transition: all 0.2s ease;
+    }
+    
+    .bottom-nav-link[href*="my_orders"] i {
+      color: #ffcc00;
+    }
+    
+    .bottom-nav-link.active,
+    .bottom-nav-link:hover,
+    .bottom-nav-link.active i,
+    .bottom-nav-link:hover i {
+      color: #ffcc00 !important;
+    }
+    
+    .bottom-nav-link[href*="my_orders"],
+    .bottom-nav-link[href*="my_orders"] i {
+      color: #ffcc00 !important;
+    }
+    
+    .cart-badge {
+      position: absolute;
+      top: -2px;
+      right: 8px;
+      background-color: #ffcc00;
+      color: #000;
+      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.5rem;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    /* Footer */
+    .footer {
+      background-color: #f8f9fa;
+      color: #6c757d;
+      padding: 40px 0 20px;
+      margin-top: 60px;
+      border-top: 1px solid #e9ecef;
+    }
+
+    .footer h5 {
+      color: #343a40;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .footer p {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .footer a {
+      color: #6c757d;
+      transition: color 0.3s ease;
+    }
+
+    .footer a:hover {
+      color: #000000;
+      text-decoration: none;
+    }
+
+    .footer-bottom {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e9ecef;
+      text-align: center;
+    }
+
+    /* Form Elements */
+    .form-control,
+    .form-select {
+      background-color: #ffffff;
+      border: 1px solid #dddddd;
+      color: #333333;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #ffcc00;
+      box-shadow: 0 0 0 0.25rem rgba(255, 204, 0, 0.25);
+    }
+
+    .form-control::placeholder {
+      color: #999999;
+      opacity: 1;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 991.98px) {
+      .hero {
+        padding: 100px 20px;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero p {
+        font-size: 1.1rem;
+      }
+
+      .bottom-navbar {
+        display: block;
+      }
+    }
+
+    @media (max-width: 767.98px) {
+      .hero {
+        padding: 80px 20px;
+      }
+
+      .hero h1 {
+        font-size: 1.8rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .category-btn {
+        padding: 4px 12px;
+        font-size: 0.85rem;
+        margin: 3px;
+      }
+    }
+
+    @media (max-width: 575.98px) {
+      .hero {
+        padding: 60px 15px;
+      }
+
+      .hero h1 {
+        font-size: 1.6rem;
+      }
+
+      .hero .btn {
+        padding: 0.5rem 1.2rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Mobile Search Styles */
+    .mobile-search-container {
+      background: #1a1a1a;
+      padding: 10px 15px;
+      transition: all 0.3s ease;
+      opacity: 0;
+      display: none;
+    }
+    
+    .mobile-search-form {
+      position: relative;
+      width: 100%;
+    }
+    
+    .mobile-search-form .input-group {
+      width: 100%;
+      position: relative;
+    }
+    
+    .mobile-search-input {
+      height: 40px;
+      border-radius: 20px !important;
+      padding-right: 80px;
+      border: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    .mobile-search-submit,
+    .mobile-search-close {
+      position: absolute;
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: #666;
+      padding: 0 10px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .mobile-search-close {
+      right: 5px;
+      color: #999;
+    }
+    
+    .mobile-search-submit {
+      color: #ffcc00;
+    }
+    
+    .search-suggestions {
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 10px 10px 0 0;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+      z-index: 1001;
+    }
+    
+    .suggestion-item {
+      padding: 10px 15px;
+      border-bottom: 1px solid #eee;
+      color: #333;
+    }
+    
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+    
+    .suggestion-item:hover {
+      background-color: #f8f9fa;
+      cursor: pointer;
+    }
+    
+    @media (max-width: 576px) {
+      .mobile-search-container {
+        padding: 8px 10px;
+      }
+      
+      .mobile-search-input {
+        font-size: 14px;
+        padding-right: 70px;
+      }
+      
+      .mobile-search-submit,
+      .mobile-search-close {
+        right: 35px;
+      }
+      
+      .mobile-search-close {
+        right: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🔸 Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light sticky-top border-bottom">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold text-dark d-flex align-items-center me-auto" href="{{ url_for('LT_Products') if session.get('user_id') else url_for('login') }}">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Chickano's Vapeshop logo" class="brand-logo me-2">
+        <span>Chickano's Vapeshop</span>
+      </a>
+      <button class="navbar-toggler" type="button" aria-label="Toggle navigation" id="mobileMenuButton">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center d-none d-lg-flex">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('LT_Products') }}">Shop</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('about') if session.get('user_id') else url_for('login', next='about') }}">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contact">Contact</a>
+          </li>
+          {% if session.get('user_id') %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+            </li>
+            <li class="nav-item ms-lg-3">
+              <a href="{{ url_for('LT_my_orders') }}" class="btn btn-yellow btn-sm d-none d-lg-inline-block">📦 My Orders</a>
+            </li>
+            <li class="nav-item ms-lg-2">
+              <a href="{{ url_for('products') }}" class="btn btn-outline-dark btn-sm d-none d-lg-inline-block">🌙 Dark Mode</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('login', next='products') }}">Login</a>
+            </li>
+          {% endif %}
+        </ul>
+        <!-- 🔍 Search + Sort inside burger (category preserved via hidden field) -->
+        <form method="get" action="{{ url_for('LT_Products') }}" class="d-flex mt-3 mt-lg-0 ms-lg-3" role="search">
+          {% if selected_category_id %}
+            <input type="hidden" name="category" value="{{ selected_category_id }}">
+          {% endif %}
+          <input class="form-control form-control-sm me-2" type="text" name="search" placeholder="Search vape products..." value="{{ search_query or '' }}">
+          <select class="form-select form-select-sm me-2" name="sort" aria-label="Sort products">
+            <option value="" {% if not sort_option %}selected{% endif %}>Sort: Newest</option>
+            <option value="price_asc" {% if sort_option == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+            <option value="price_desc" {% if sort_option == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+            <option value="stock_desc" {% if sort_option == 'stock_desc' %}selected{% endif %}>Stock: High to Low</option>
+            <option value="stock_asc" {% if sort_option == 'stock_asc' %}selected{% endif %}>Stock: Low to High</option>
+            <option value="top_sales" {% if sort_option == 'top_sales' %}selected{% endif %}>Top Sales</option>
+          </select>
+          <button class="btn btn-yellow btn-sm" type="submit">Apply</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 🔸 Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>STOP SMOKING, START VAPING!</h1>
+      <p>Premium products. Powerful performance. Pure satisfaction.</p>
+      <a href="#products" class="btn btn-yellow px-4 py-2">Shop Now</a>
+    </div>
+  </section>
+
+  <!-- 🔸 Categories -->
+  <div class="container text-center my-4">
+    <div class="d-flex flex-wrap justify-content-center">
+      <!-- 🟡 All Products -->
+      <a href="{{ url_for('LT_Products', sort=sort_option, search=search_query) }}"
+         class="btn category-btn {% if not selected_category_id %}active{% endif %}">
+         All
+      </a>
+
+      <!-- 🟡 Dynamically Render Categories from DB -->
+      {% for cat in categories %}
+        <a href="{{ url_for('LT_Products', category=cat['CategoryID'], sort=sort_option, search=search_query) }}"
+           class="btn category-btn {% if selected_category_id == cat['CategoryID']|string %}active{% endif %}">
+           {{ cat['Category_Name'] }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- 🔸 Products -->
+  <section id="products" class="product-section">
+    <div class="container">
+      <h2 class="text-center text-yellow mb-5 fw-bold">AVAILABLE PRODUCTS</h2>
+      <div class="row g-4">
+        {% for product in products %}
+          <div class="col-6 col-md-4 col-lg-3">
+            <a href="{{ url_for('LT_Product_details', product_id=product.id) }}">
+              <div class="product-card">
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-img">
+                <div class="card-body d-flex flex-column">
+                  <h5 class="product-title">{{ product.name }}</h5>
+                  <p class="product-description">{{ product.description[:80] }}...</p>
+                  <div class="mt-auto">
+                    <p class="price mb-1">₱{{ product.price }}</p>
+                    <small class="text-muted">Stock: {{ product.stock }}</small>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        {% else %}
+          <div class="col-12 text-center">
+            <p class="text-muted">No products available.</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- 🔸 Footer -->
+  <footer class="footer" id="contact">
+    <div class="container">
+      <div class="row text-center text-md-start">
+        <div class="col-md-4 mb-4">
+          <h5>Chickano's Vapeshop</h5>
+          <p>Your trusted partner for premium vaping products and accessories.</p>
+        </div>
+        <div class="col-md-4 mb-4">
+          <h6>Connect</h6>
+          <p>Email: chickanos.vapelounge@gmail.com</p>
+          <p><a href="https://www.facebook.com/chickanosvapeloungeofficial">Facebook</a> | <a href="https://www.instagram.com/chickanosvapelounge">Instagram</a></p>
+        </div>
+        <div>
+          <span>16 Papaya Road, Cabanatuan City, Philippines</span>
+          <span class="ms-3">📦 FREE Returns</span>
+        </div>
+      </div>
+      <div class="text-center mt-4">
+        <small>📅 2025 Chickano's Vapeshop. All rights reserved.</small>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 🔸 Back to Top Button -->
+  <button id="backToTop" class="btn btn-yellow">↑</button>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+  
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu" style="font-size: 0.9rem;">
+    <div class="user-info mb-2 px-3" style="padding-top: 10px;">
+      {% if session.get('user_id') %}
+        <div class="text-dark small mb-1" style="font-size: 0.8rem;">Logged in as: {{ session.get('email') }}</div>
+      {% endif %}
+    </div>
+    <ul class="navbar-nav" style="padding: 0 10px;">
+      <li class="nav-item">
+        <a class="nav-link py-1" href="{{ url_for('LT_Products') }}">Shop</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link py-1" href="{{ url_for('about') if session.get('user_id') else url_for('login', next='about') }}">About</a>
+      </li>
+      {% if session.get('user_id') %}
+        <li class="nav-item">
+          <a class="nav-link py-1" href="{{ url_for('LT_my_orders') }}">My Orders</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link py-1" href="{{ url_for('logout') }}">Logout</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link py-1" href="{{ url_for('products') }}">🌙 Dark Mode</a>
+        </li>
+      {% else %}
+        <li class="nav-item">
+          <a class="nav-link py-1" href="{{ url_for('login', next='products') }}">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link py-1" href="{{ url_for('products') }}">🌙 Dark Mode</a>
+        </li>
+      {% endif %}
+      <li class="nav-item mt-2" style="padding: 0 5px;">
+        <form method="get" action="{{ url_for('LT_Products') }}" class="search-form" style="font-size: 0.85rem;">
+          {% if selected_category_id %}
+            <input type="hidden" name="category" value="{{ selected_category_id }}">
+          {% endif %}
+          <input class="form-control form-control-sm mb-1" type="text" name="search" placeholder="Search..." value="{{ search_query or '' }}">
+          <select class="form-select form-select-sm" name="sort" onchange="this.form.submit()" aria-label="Sort products">
+            <option value="" {% if not sort_option %}selected{% endif %}>Sort by</option>
+            <option value="price_asc" {% if sort_option == 'price_asc' %}selected{% endif %}>Price: Low-High</option>
+            <option value="price_desc" {% if sort_option == 'price_desc' %}selected{% endif %}>Price: High-Low</option>
+            <option value="stock_desc" {% if sort_option == 'stock_desc' %}selected{% endif %}>In Stock</option>
+          </select>
+          <button class="btn btn-yellow btn-sm w-100 mt-1 py-1" type="submit" style="font-size: 0.8rem;">Apply</button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Bottom Navigation (Mobile) -->
+  <div class="bottom-navbar d-lg-none">
+    <!-- Search Bar (initially hidden) -->
+    <div class="mobile-search-container" id="mobileSearchContainer" style="display: none;">
+      <form method="get" action="{{ url_for('LT_Products') }}" class="mobile-search-form">
+        {% if selected_category_id %}
+          <input type="hidden" name="category" value="{{ selected_category_id }}">
+        {% endif %}
+        <div class="input-group">
+          <input type="text" 
+                 class="form-control mobile-search-input" 
+                 name="search" 
+                 placeholder="Search products..." 
+                 value="{{ search_query or '' }}"
+                 autocomplete="off">
+          <button class="btn btn-yellow mobile-search-submit" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+          <button type="button" class="btn btn-outline-secondary mobile-search-close" id="closeMobileSearch">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+      </form>
+      <div class="search-suggestions" id="searchSuggestions"></div>
+    </div>
+    
+    <!-- Bottom Navbar -->
+    <div class="bottom-nav">
+      <a href="{{ url_for('LT_Products') }}" class="bottom-nav-link">
+        <i class="bi bi-shop"></i>
+        <span>Shop</span>
+      </a>
+      <a href="{{ url_for('LT_my_orders') if session.get('user_id') else url_for('login') }}" class="bottom-nav-link">
+        <i class="bi bi-bag"></i>
+        <span>Orders</span>
+        {% if session.get('user_id') %}
+          <span class="cart-badge">0</span>
+        {% endif %}
+      </a>
+      <a href="{{ url_for('products') }}" class="bottom-nav-link">
+        <i class="bi bi-moon"></i>
+        <span>Dark Mode</span>
+      </a>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Mobile Menu Toggle
+  const menuButton = document.getElementById('mobileMenuButton');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+  const mobileSearchBtn = document.getElementById('mobileSearchBtn');
+  const searchForm = document.querySelector('.navbar form');
+  
+  function toggleMenu() {
+    document.body.classList.toggle('menu-open');
+    mobileMenuOverlay.classList.toggle('show');
+    mobileMenu.classList.toggle('show');
+  }
+  
+  if (menuButton) {
+    menuButton.addEventListener('click', toggleMenu);
+  }
+  
+  if (mobileMenuOverlay) {
+    mobileMenuOverlay.addEventListener('click', toggleMenu);
+  }
+  
+  // Mobile search functionality
+  const mobileSearchContainer = document.getElementById('mobileSearchContainer');
+  const closeMobileSearch = document.getElementById('closeMobileSearch');
+  const mobileSearchInput = document.querySelector('.mobile-search-input');
+  const searchSuggestions = document.getElementById('searchSuggestions');
+  
+  // Toggle mobile search
+  if (mobileSearchBtn && mobileSearchContainer) {
+    mobileSearchBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      mobileSearchContainer.style.display = 'block';
+      setTimeout(() => {
+        mobileSearchContainer.style.opacity = '1';
+        mobileSearchInput.focus();
+      }, 10);
+      document.querySelector('.bottom-nav').style.display = 'none';
+    });
+  }
+  
+  // Close mobile search
+  if (closeMobileSearch) {
+    closeMobileSearch.addEventListener('click', function(e) {
+      e.preventDefault();
+      mobileSearchContainer.style.opacity = '0';
+      setTimeout(() => {
+        mobileSearchContainer.style.display = 'none';
+        document.querySelector('.bottom-nav').style.display = 'flex';
+      }, 300);
+    });
+  }
+  
+  // Search suggestions
+  if (mobileSearchInput && searchSuggestions) {
+    mobileSearchInput.addEventListener('input', function() {
+      const query = this.value.trim();
+      if (query.length > 1) {
+        // Here you would typically make an AJAX call to get search suggestions
+        // For now, we'll just show a simple message
+        searchSuggestions.innerHTML = `<div class="suggestion-item">Search for "${query}"</div>`;
+        searchSuggestions.style.display = 'block';
+      } else {
+        searchSuggestions.style.display = 'none';
+      }
+    });
+    
+    // Close suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!mobileSearchContainer.contains(e.target)) {
+        searchSuggestions.style.display = 'none';
+      }
+    });
+  }
+  
+  // Close menu when clicking on nav links
+  const navLinks = document.querySelectorAll('.mobile-menu .nav-link');
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      document.body.classList.remove('menu-open');
+      mobileMenuOverlay.classList.remove('show');
+      mobileMenu.classList.remove('show');
+    });
+  });
+  
+  // Back to Top Button
+  const backToTopButton = document.getElementById('backToTop');
+  
+  window.addEventListener('scroll', () => {
+    if (window.pageYOffset > 300) {
+      backToTopButton.style.display = 'block';
+    } else {
+      backToTopButton.style.display = 'none';
+    }
+  });
+  
+  backToTopButton.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+  
+  // Show/hide bottom navbar on scroll
+  let lastScrollTop = 0;
+  const bottomNavbar = document.querySelector('.bottom-navbar');
+  
+  window.addEventListener('scroll', function() {
+    if (window.innerWidth < 992) { // Only on mobile
+      const st = window.pageYOffset || document.documentElement.scrollTop;
+      
+      if (st > lastScrollTop && st > 100) {
+        // Scroll down
+        bottomNavbar.style.transform = 'translateY(100%)';
+      } else {
+        // Scroll up
+        bottomNavbar.style.transform = 'translateY(0)';
+      }
+      
+      lastScrollTop = st <= 0 ? 0 : st;
+    }
+  });
+  
+  // Show bottom navbar on mobile
+  if (window.innerWidth < 992) {
+    bottomNavbar.style.display = 'block';
+      
+      // Show/hide bottom nav on scroll
+      let lastScroll = 0;
+      window.addEventListener('scroll', function() {
+        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (currentScroll <= 0) {
+          bottomNavbar.style.transform = 'translateY(0)';
+          return;
+        }
+        
+        if (currentScroll > lastScroll && currentScroll > 100) {
+          // Scrolling down
+          bottomNavbar.style.transform = 'translateY(100%)';
+        } else if (currentScroll < lastScroll) {
+          // Scrolling up
+          bottomNavbar.style.transform = 'translateY(0)';
+        }
+        
+        lastScroll = currentScroll <= 0 ? 0 : currentScroll;
+      }, { passive: true });
+    }
+  
+  // Update cart badge if there are items in cart
+  const cartBadge = document.querySelector('.cart-badge');
+  if (cartBadge) {
+    // This would be replaced with actual cart count from your backend
+    const cartCount = 0; // Get this from your cart system
+    if (cartCount > 0) {
+      cartBadge.textContent = cartCount;
+      cartBadge.style.display = 'flex';
+    } else {
+      cartBadge.style.display = 'none';
+    }
+  }
+</script>
+</body>
+</html>

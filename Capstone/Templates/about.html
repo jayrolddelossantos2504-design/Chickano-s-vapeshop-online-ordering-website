@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About | Chickano's Vapeshop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Bootstrap & Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-yellow: #ffcc00;
+      --dark-bg: #121212;
+      --card-bg: rgba(40, 40, 40, 0.9);
+      --text-primary: #f8f9fa;
+      --text-secondary: #e0e0e0;
+      --text-muted: #adb5bd;
+    }
+    
+    body {
+      background-color: var(--dark-bg);
+      color: var(--text-primary);
+      font-family: 'Montserrat', sans-serif;
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+    
+    /* Mobile Menu Styles */
+    .navbar-toggler {
+      border: none;
+      padding: 0.5rem;
+      z-index: 1001;
+      position: relative;
+    }
+    
+    .navbar-toggler:focus {
+      box-shadow: none;
+      outline: none;
+    }
+    
+    .navbar-toggler .icon-bar {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background-color: #ffffff;
+      margin: 4px 0;
+      transition: all 0.3s ease;
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .icon-bar:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .icon-bar:nth-child(2) {
+      opacity: 0;
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .icon-bar:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+    
+    .mobile-menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.95);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .mobile-menu-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 300px;
+      height: 100%;
+      background-color: #1a1a1a;
+      z-index: 1000;
+      padding: 80px 20px 30px;
+      transition: right 0.3s ease;
+      overflow-y: auto;
+    }
+    
+    .mobile-menu.show {
+      right: 0;
+    }
+    
+    .mobile-menu .nav-link {
+      display: block;
+      padding: 15px 0;
+      color: #fff !important;
+      font-size: 1.1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .mobile-menu .btn-yellow {
+      display: block;
+      margin: 20px 0;
+      text-align: center;
+      width: 100%;
+    }
+    
+    .mobile-menu .form-control,
+    .mobile-menu .form-select {
+      width: 100%;
+      margin: 10px 0;
+      padding: 8px 12px;
+      background-color: #2d2d2d !important;
+      color: #fff !important;
+      border: 1px solid #444;
+    }
+    
+    .mobile-menu .form-control::placeholder {
+      color: #aaa !important;
+    }
+    
+    body.menu-open {
+      overflow: hidden;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .navbar {
+      background-color: #1a1a1a !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+      padding: 0.5rem 0;
+    }
+    
+    /* Search input and sort dropdown styling */
+    .form-control, .form-select {
+      background-color: #ffffff !important;
+      color: #333333 !important;
+      border: 1px solid #dddddd;
+    }
+    
+    .form-control::placeholder {
+      color: #666666 !important;
+      opacity: 1;
+    }
+    
+    .form-select {
+      cursor: pointer;
+    }
+    
+    .form-select:focus, .form-control:focus {
+      border-color: #ffcc00;
+      box-shadow: 0 0 0 0.25rem rgba(255, 204, 0, 0.25);
+    }
+    
+    .navbar-brand {
+      color: #ffffff !important;
+      font-weight: 600;
+    }
+    
+    .navbar-brand img {
+      height: 40px;
+      margin-right: 10px;
+    }
+    
+    .nav-link {
+      color: #e0e0e0 !important;
+      padding: 0.5rem 1rem !important;
+      margin: 0 0.2rem;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-link:hover, .nav-link:focus {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #ffffff !important;
+    }
+    
+    .navbar-toggler {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .navbar-toggler:focus {
+      box-shadow: 0 0 0 0.15rem rgba(255, 255, 255, 0.1);
+    }
+    
+    .top-bar {
+      background-color: #000000;
+      color: #ffffff;
+      padding: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+
+    .card {
+      background: var(--card-bg) !important;
+      border-color: var(--card-border) !important;
+    }
+
+    .form-control, .form-select {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border-color: var(--card-border);
+    }
+
+    .form-control:focus, .form-select:focus {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      border-color: #ffcc00;
+      box-shadow: 0 0 0 0.25rem rgba(255, 204, 0, 0.25);
+    }
+
+
+    /* --- NAVBAR --- */
+    .navbar {
+      background-color: rgba(0,0,0,0.9) !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 15px rgba(0,0,0,0.4);
+      padding: 0.6rem 0;
+    }
+    .navbar-brand img {
+      height: 40px;
+      margin-right: 10px;
+    }
+    .nav-link {
+      color: #e0e0e0 !important;
+      padding: 0.5rem 1rem !important;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    .nav-link:hover {
+      background-color: rgba(255,255,255,0.1);
+      color: #fff !important;
+    }
+    .btn-yellow {
+      background-color: #ffcc00;
+      color: #000 !important;
+      border: none;
+      transition: 0.3s;
+    }
+    .btn-yellow:hover {
+      background-color: #e6b800 !important;
+      transform: translateY(-2px);
+    }
+
+    /* --- HERO --- */
+    .hero-section {
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 15px;
+    }
+    .hero-section img {
+      width: 150px;
+      filter: drop-shadow(0 0 8px rgba(255,255,255,0.2));
+      margin-bottom: 1rem;
+      animation: fadeIn 2s ease-in-out;
+    }
+    .hero-section h1 {
+      font-weight: 700;
+      color: #fff;
+    }
+    .hero-section p {
+      color: #ccc;
+      font-size: 1.1rem;
+      max-width: 600px;
+    }
+
+    /* --- FEATURES --- */
+    .features-section {
+      background-color: rgba(20,20,20,0.7);
+      backdrop-filter: blur(4px);
+    }
+    .feature-card {
+      background-color: rgba(30, 30, 30, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 2.5rem 1.5rem;
+      transition: all 0.3s ease;
+      height: 100%;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    .feature-card:hover {
+      background-color: rgba(40, 40, 40, 0.9);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    /* --- OUR STORY --- */
+    .our-story {
+      padding: 100px 0;
+      background-color: rgba(30, 30, 30, 0.8);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .our-story::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('{{ url_for('static', filename='images/pattern.png') }}') center/cover;
+      opacity: 0.03;
+      z-index: 0;
+    }
+    
+    .our-story h2 {
+      color: #ffcc00;
+    }
+
+    /* --- CONTACT --- */
+    .contact-section {
+      background: linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(40,40,40,0.95) 100%);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 100px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .contact-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('{{ url_for('static', filename='images/pattern-dots.png') }}') center/cover;
+      opacity: 0.05;
+      z-index: 0;
+    }
+    
+    .contact-section h2 {
+      color: var(--primary-yellow);
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+    
+    .contact-section p {
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 30px;
+    }
+    
+    .btn-yellow {
+      background-color: var(--primary-yellow);
+      color: #000 !important;
+      border: none;
+      padding: 12px 30px !important;
+      font-weight: 600;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+    }
+    
+    .btn-yellow:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 7px 20px rgba(255, 204, 0, 0.4);
+    }
+    
+    .btn-yellow::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.2);
+      transition: 0.3s;
+      z-index: -1;
+    }
+    
+    .btn-yellow:hover::before {
+      width: 100%;
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      background: rgba(0, 0, 0, 0.95);
+      color: var(--text-muted);
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 0.95rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    footer a {
+      color: var(--primary-yellow);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    footer a:hover {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .hero-section {
+      background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.7)), url('{{ url_for('static', filename='images/hero-bg.jpg') }}');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: white;
+      padding: 120px 20px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .hero-section h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin: 20px 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    .hero-section p {
+      font-size: 1.4rem;
+      max-width: 800px;
+      margin: 0 auto 30px;
+      color: var(--text-secondary);
+    }
+
+    .features-section {
+      padding: 100px 0;
+      background-color: var(--dark-bg);
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      line-height: 1.8;
+      margin-bottom: 0;
+    }
+
+    .feature-card i {
+      font-size: 2.8rem;
+      margin-bottom: 25px;
+      color: var(--primary-yellow);
+      transition: transform 0.3s ease;
+    }
+    
+    .feature-card:hover i {
+      transform: scale(1.1);
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      padding: 40px 25px;
+      border-radius: 16px;
+      height: 100%;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(255, 204, 0, 0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🔸 Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold text-yellow d-flex align-items-center me-auto" href="{{ url_for('products') if session.get('user_id') else url_for('login') }}">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Chickano's Vapeshop Logo">
+        <span>Chickano's Vapeshop</span>
+      </a>
+
+      <button class="navbar-toggler" type="button" aria-label="Toggle navigation" id="mobileMenuButton">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('products') if session.get('user_id') else url_for('login', next='products') }}">
+              Shop
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{{ url_for('about') if session.get('user_id') else url_for('login', next='about') }}">
+              About
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contact">Contact</a>
+          </li>
+          {% if session.get('user_id') %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+            </li>
+            <li class="nav-item ms-lg-3">
+              <a href="{{ url_for('my_orders') }}" class="btn btn-yellow btn-sm">📦 My Orders</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('login', next=request.endpoint) }}">Login</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 🔹 HERO SECTION -->
+  <section class="hero-section" data-aos="fade-up">
+    <div class="container">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" style="max-width: 120px; margin-bottom: 20px;">
+      <h1 class="display-4 fw-bold mb-4">Elevate Your Vaping Experience</h1>
+      <p class="lead">Premium products. Authentic flavor. Trusted since 2019.</p>
+    </div>
+  </section>
+
+  <!-- 🔹 FEATURES -->
+  <section class="features-section text-center py-5" data-aos="fade-up">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-4" data-aos="zoom-in">
+          <div class="feature-card">
+            <div class="mb-3">
+              <i class="bi bi-stars display-4 text-warning"></i>
+            </div>
+            <h5 class="fw-bold text-white mb-3">Premium Quality</h5>
+            <p class="text-light" style="opacity: 0.9; line-height: 1.7; font-size: 1.05rem;">
+              Only authentic, high-grade vape products from trusted suppliers.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
+          <div class="feature-card">
+            <div class="mb-3">
+              <i class="bi bi-heart-pulse display-4 text-warning"></i>
+            </div>
+            <h5 class="fw-bold text-white mb-3">Customer Commitment</h5>
+            <p class="text-light" style="opacity: 0.9; line-height: 1.7; font-size: 1.05rem;">
+              We prioritize satisfaction, safety, and lasting customer trust.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+          <div class="feature-card">
+            <div class="mb-3">
+              <i class="bi bi-lightning-charge display-4 text-warning"></i>
+            </div>
+            <h5 class="fw-bold text-white mb-3">Innovation</h5>
+            <p class="text-light" style="opacity: 0.9; line-height: 1.7; font-size: 1.05rem;">
+              Always evolving with the latest in vaping technology and culture.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🔹 OUR STORY -->
+  <section class="our-story text-center py-5" data-aos="fade-up">
+    <div class="container">
+      <h2 class="fw-bold mb-3">Our Story</h2>
+      <p class="mx-auto" style="max-width: 700px;">
+        At Chickano’s Vapeshop, we believe in providing high-quality vaping products that help you make the switch 
+        from traditional smoking to a cleaner and more enjoyable experience. Founded in 2019, our goal has always been 
+        to deliver premium vape devices, juices, and accessories that cater to both beginners and seasoned vapers.
+      </p>
+      <p class="mx-auto mt-3" style="max-width: 700px;">
+        Our commitment is to customer satisfaction, product safety, and innovation in vaping culture. 
+        Whether you’re exploring new flavors or upgrading your gear, Chickano’s Vapeshop has you covered.
+      </p>
+    </div>
+  </section>
+
+  <!-- 🔹 CONTACT CTA -->
+  <section id="contact" class="contact-section text-center py-5" data-aos="fade-up">
+    <h2 class="text-warning mb-3">Got Questions?</h2>
+    <p class="text-white mb-4">We’d love to hear from you! Whether you’re curious about products or need support — we’re here.</p>
+    <a href="https://www.facebook.com/chickanosvapeloungeofficial" target="_blank" class="btn btn-yellow">
+      <i class="bi bi-facebook me-2"></i>Contact Us on Facebook
+    </a>
+  </section>
+
+  <!-- 🔹 FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <p class="mb-0">© 2025 Chickano's Vapeshop. All rights reserved. | 
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS -->
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+  
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <ul class="navbar-nav">
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('products') }}">Shop</a></li>
+      <li class="nav-item"><a class="nav-link active" href="{{ url_for('about') }}">About</a></li>
+      <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Logout</a></li>
+      <li class="nav-item">
+        <a href="{{ url_for('my_orders') }}" class="btn btn-yellow btn-sm w-100">📦 My Orders</a>
+      </li>
+    </ul>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // Initialize AOS
+    AOS.init({ once: true, duration: 800 });
+    
+    // Mobile Menu Toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuButton = document.getElementById('mobileMenuButton');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+      
+      function toggleMenu() {
+        document.body.classList.toggle('menu-open');
+        mobileMenu.classList.toggle('show');
+        mobileMenuOverlay.classList.toggle('show');
+      }
+      
+      menuButton.addEventListener('click', toggleMenu);
+      mobileMenuOverlay.addEventListener('click', toggleMenu);
+      
+      // Close menu when clicking on nav links
+      document.querySelectorAll('.mobile-menu .nav-link, .mobile-menu .btn').forEach(link => {
+        link.addEventListener('click', () => {
+          toggleMenu();
+        });
+      });
+    });
+  </script>
+</body>
+</html>

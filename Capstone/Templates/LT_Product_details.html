@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ product.name }} | Chickano's Vapeshop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    /* Base Styles */
+    body {
+      background-color: #f9f9f9;
+      font-family: 'Montserrat', sans-serif;
+      color: #212529;
+      overflow-x: hidden;
+    }
+
+    /* Navbar Styles */
+    .navbar {
+      background-color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 0.5rem 1rem;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      margin: 0;
+      padding: 0.25rem 0;
+    }
+
+    .brand-logo {
+      height: 30px;
+      width: auto;
+      margin-right: 0.75rem;
+    }
+
+    .navbar-brand span {
+      color: #212529;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .nav-link {
+      color: #212529 !important;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+    }
+
+    .nav-link:hover {
+      color: #ffcc00 !important;
+    }
+
+    /* Toggle Button */
+    .navbar-toggler {
+      border: none;
+      padding: 0.5rem;
+      z-index: 1001;
+      position: relative;
+    }
+    
+    .navbar-toggler:focus {
+      box-shadow: none;
+      outline: none;
+    }
+    
+    .navbar-toggler .icon-bar {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background-color: #212529;
+      margin: 4px 0;
+      transition: all 0.3s ease;
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .icon-bar:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .icon-bar:nth-child(2) {
+      opacity: 0;
+    }
+    
+    .navbar-toggler[aria-expanded="true"] .icon-bar:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* Product Detail Section */
+    .product-detail {
+      padding: 80px 20px;
+    }
+
+    .product-card {
+      background: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .product-card:hover {
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .product-img {
+      width: 100%;
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+    }
+
+    .product-img:hover {
+      transform: scale(1.02);
+    }
+
+    .product-title {
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 15px;
+      color: #212529;
+    }
+
+    .product-description {
+      font-size: 1rem;
+      margin-bottom: 20px;
+      color: #495057;
+      line-height: 1.6;
+    }
+
+    .price {
+      color: #212529;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .btn-yellow {
+      background-color: #ffcc00;
+      color: #212529;
+      font-weight: 600;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-yellow:hover {
+      background-color: #e6b800;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline-light {
+      border-color: #212529;
+      color: #212529;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-light:hover {
+      background-color: #212529;
+      color: #fff;
+    }
+
+    /* Related Products */
+    .related-section {
+      padding: 80px 0;
+      background-color: #f8f9fa;
+    }
+
+    .related-section h3 {
+      text-align: center;
+      color: #212529;
+      font-weight: 700;
+      margin-bottom: 50px;
+    }
+
+    .related-section a {
+      text-decoration: none !important;
+      color: inherit !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .related-section a:hover,
+    .related-section a:focus,
+    .related-section a:active,
+    .related-section a:visited {
+      text-decoration: none !important;
+      color: inherit !important;
+      outline: none !important;
+    }
+
+    .card {
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      transition: all 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+    
+    .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .card-text {
+      flex: 1;
+    }
+
+    .card img {
+      height: 200px;
+      object-fit: cover;
+      border-bottom: 1px solid #eee;
+    }
+
+    .card-title {
+      font-weight: 600;
+      color: #212529;
+    }
+
+    .card-text {
+      color: #495057;
+    }
+
+    /* Footer */
+    .footer {
+      background-color: #ffffff;
+      color: #495057;
+      padding: 60px 0;
+      border-top: 1px solid #ddd;
+    }
+
+    .footer h5, .footer h6 {
+      color: #212529;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .footer a {
+      color: #212529;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer a:hover {
+      color: #ffcc00;
+      text-decoration: underline;
+    }
+
+    .footer small {
+      color: #6c757d;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 280px;
+      height: 100%;
+      background-color: #ffffff;
+      z-index: 1000;
+      padding: 70px 20px 30px;
+      transition: right 0.3s ease;
+      overflow-y: auto;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .mobile-menu.show {
+      right: 0;
+    }
+
+    .mobile-menu .nav-link {
+      display: block;
+      padding: 10px 0;
+      color: #333333 !important;
+      font-size: 1rem;
+      border-bottom: 1px solid #f0f0f0;
+      transition: all 0.2s ease;
+    }
+
+    .mobile-menu .nav-link:hover {
+      color: #000000 !important;
+      padding-left: 10px;
+      background-color: #f9f9f9;
+    }
+
+    .mobile-menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .mobile-menu-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Bottom Navbar */
+    .bottom-navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #1a1a1a;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      padding: 5px 0;
+      display: none;
+      border-top: 1px solid #333;
+    }
+
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 0 10px;
+    }
+
+    .bottom-nav-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #ffcc00; /* Changed to gold */
+      text-decoration: none;
+      font-size: 0.7rem;
+      padding: 8px 0;
+      transition: all 0.3s ease;
+      flex: 1;
+      text-align: center;
+      position: relative;
+    }
+
+    .bottom-nav-link i {
+      font-size: 1.2rem;
+      margin-bottom: 2px;
+      transition: all 0.2s ease;
+    }
+
+    .bottom-nav-link:hover,
+    .bottom-nav-link.active {
+      color: #ffdd33; /* Lighter gold on hover */
+      background-color: rgba(255, 204, 0, 0.2);
+    }
+
+    .bottom-nav-link:hover i,
+    .bottom-nav-link.active i {
+      color: #ffdd33; /* Lighter gold on hover */
+      transform: scale(1.15);
+    }
+    
+    .bottom-nav-link i {
+      color: #ffcc00; /* Changed to gold */
+      transition: all 0.3s ease;
+      font-size: 1.2rem;
+      margin-bottom: 2px;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -2px;
+      right: 10px;
+      background-color: #ffcc00;
+      color: #1a1a1a;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      font-size: 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      border: 1px solid #1a1a1a;
+    }
+
+    /* Mobile Search */
+    .mobile-search-container {
+      position: fixed;
+      bottom: 50px;
+      left: 0;
+      right: 0;
+      background: #2a2a2a;
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 999;
+    }
+
+    .mobile-search-form {
+      position: relative;
+    }
+
+    .mobile-search-input {
+      height: 40px;
+      border-radius: 20px !important;
+      padding-right: 80px;
+      border: 1px solid #ddd;
+      font-size: 0.9rem;
+    }
+
+    .mobile-search-submit {
+      position: absolute;
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-radius: 0 20px 20px 0 !important;
+      height: 40px;
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .mobile-search-close {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 40px;
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50% !important;
+      padding: 0;
+    }
+
+    .search-suggestions {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      background: white;
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-height: 300px;
+      overflow-y: auto;
+      display: none;
+      z-index: 1001;
+    }
+
+    .search-suggestions a {
+      display: block;
+      padding: 10px 15px;
+      color: #333;
+      text-decoration: none;
+      border-bottom: 1px solid #f0f0f0;
+      transition: all 0.2s ease;
+    }
+
+    .search-suggestions a:hover {
+      background-color: #f9f9f9;
+      padding-left: 20px;
+    }
+
+    /* Back to Top Button */
+    #backToTop {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: none;
+      z-index: 99;
+      border: none;
+      cursor: pointer;
+      background-color: #ffcc00;
+      color: #212529;
+    }
+
+    #backToTop:hover {
+      background-color: #e6b800;
+    }
+
+    @media (max-width: 768px) {
+      .product-detail {
+        padding: 60px 10px 80px;
+      }
+
+      .product-title {
+        font-size: 1.5rem;
+      }
+
+      .product-card {
+        padding: 1.5rem;
+      }
+
+      .bottom-navbar {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold text-yellow d-flex align-items-center me-auto" href="{{ url_for('LT_Products') if session.get('user_id') else url_for('login') }}">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Chickano's Vapeshop logo" class="brand-logo me-2">
+      <span>Chickano's Vapeshop</span>
+    </a>
+    <button class="navbar-toggler" type="button" aria-label="Toggle navigation" id="mobileMenuButton">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center d-none d-lg-flex">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('LT_Products') }}">Shop</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('about') if session.get('user_id') else url_for('login', next=url_for('about')) }}">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#contact">Contact</a>
+        </li>
+        {% if session.get('user_id') %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+          </li>
+          <li class="nav-item ms-lg-3">
+            <a href="{{ url_for('LT_my_orders') }}" class="btn btn-yellow btn-sm d-none d-lg-inline-block">📦 My Orders</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('login', next=url_for('LT_Products')) }}">Login</a>
+          </li>
+        {% endif %}
+      </ul>
+      
+      <!-- Search form -->
+      <form method="get" action="{{ url_for('LT_Products') }}" class="d-flex mt-3 mt-lg-0 ms-lg-3" role="search">
+        <input class="form-control form-control-sm me-2" type="text" name="search" placeholder="Search vape products..." value="">
+        <button class="btn btn-yellow btn-sm" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu Overlay -->
+<div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu" style="font-size: 0.9rem;">
+  <div class="user-info mb-2 px-3" style="padding-top: 10px;">
+    {% if session.get('user_id') %}
+      <div class="text-dark small mb-1" style="font-size: 0.8rem;">Logged in as: {{ session.get('email') }}</div>
+    {% endif %}
+  </div>
+  <ul class="navbar-nav" style="padding: 0 10px;">
+    <li class="nav-item">
+      <a class="nav-link py-1" href="{{ url_for('LT_Products') }}">Shop</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link py-1" href="{{ url_for('about') if session.get('user_id') else url_for('login', next='about') }}">About</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link py-1" href="#contact">Contact</a>
+    </li>
+    {% if session.get('user_id') %}
+      <li class="nav-item">
+        <a class="nav-link py-1" href="{{ url_for('my_orders') }}">My Orders</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link py-1" href="{{ url_for('logout') }}">Logout</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link py-1" href="{{ url_for('product_detail', product_id=product.id) }}">🌙 Dark Mode</a>
+      </li>
+    {% else %}
+      <li class="nav-item">
+        <a class="nav-link py-1" href="{{ url_for('login', next='LT_Products') }}">Login</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link py-1" href="{{ url_for('product_detail', product_id=product.id) }}">🌙 Dark Mode</a>
+      </li>
+    {% endif %}
+  </ul>
+</div>
+
+  <!-- Bottom Navigation (Mobile) -->
+  <div class="bottom-navbar d-lg-none">
+    <!-- Search Bar (initially hidden) -->
+    <div class="mobile-search-container" id="mobileSearchContainer" style="display: none;">
+      <form method="get" action="{{ url_for('LT_Products') }}" class="mobile-search-form">
+        <div class="input-group">
+          <input type="text" 
+                 class="form-control mobile-search-input" 
+                 name="search" 
+                 placeholder="Search products..." 
+                 autocomplete="off">
+          <button class="btn btn-yellow mobile-search-submit" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+          <button type="button" class="btn btn-outline-secondary mobile-search-close" id="closeMobileSearch">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+      </form>
+      <div class="search-suggestions" id="searchSuggestions"></div>
+    </div>
+    
+    <!-- Bottom Navbar -->
+    <div class="bottom-nav">
+      <a href="{{ url_for('LT_Products') }}" class="bottom-nav-link">
+        <i class="bi bi-shop"></i>
+        <span>Shop</span>
+      </a>
+      <a href="{{ url_for('LT_my_orders') if session.get('user_id') else url_for('login') }}" class="bottom-nav-link">
+        <i class="bi bi-bag"></i>
+        <span>Orders</span>
+      </a>
+      <a href="{{ url_for('product_detail', product_id=product.id) }}" class="bottom-nav-link">
+        <i class="bi bi-moon"></i>
+        <span>Dark Mode</span>
+      </a>
+    </div>
+  </div>
+
+<!-- Product Detail -->
+<section class="product-detail">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6 mb-4 mb-md-0">
+        <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-img">
+      </div>
+      <div class="col-md-6">
+        <div class="product-card">
+          <h2 class="product-title">{{ product.name }}</h2>
+          <p class="product-description">{{ product.description }}</p>
+          <p class="price">₱{{ product.price }}</p>
+          <p class="mb-3">Stock available: {{ product.stock }}</p>
+
+          <form id="addToOrderForm" method="post" onsubmit="return handleAddToOrder(event)">
+            <input type="hidden" name="product_id" value="{{ product.id }}">
+            <input type="hidden" name="next" value="{{ url_for('LT_Product_details', product_id=product.id) }}">
+            <input type="hidden" name="is_light_theme" value="true">
+            <div class="mb-3">
+              <label for="quantity" class="form-label">Quantity:</label>
+              <input type="number" class="form-control" id="quantity" name="quantity" min="1" max="{{ product.stock }}" value="1" required>
+            </div>
+            <button type="submit" class="btn btn-yellow w-100" id="addToOrderBtn">
+              <i class="bi bi-cart-plus me-2"></i>Add to Order
+            </button>
+          </form>
+          
+          <script>
+          function handleAddToOrder(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            fetch("{{ url_for('add_to_order') }}", {
+              method: 'POST',
+              body: formData
+            })
+            .then(response => {
+              if (response.redirected) {
+                window.location.href = response.url;
+              } else {
+                return response.json().then(data => {
+                  if (data.success) {
+                    // Redirect back to the same product details page
+                    window.location.href = "{{ url_for('LT_Product_details', product_id=product.id) }}";
+                  } else {
+                    alert(data.message || 'Failed to add to order');
+                  }
+                });
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('An error occurred while adding to order');
+            });
+            
+            return false;
+          }
+          </script>
+
+          <a href="{{ url_for('LT_Products') }}" class="btn btn-outline-light w-100 mt-3">← Back to Products</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Related Products -->
+<section class="related-section">
+  <div class="container">
+    <h3>Suggested Products You Might Like</h3>
+    <div class="row g-4">
+      {% for item in related_products %}
+      <div class="col-6 col-md-4 col-lg-3">
+        <a href="{{ url_for('LT_Product_details', product_id=item.id) }}">
+          <div class="card h-100 text-center">
+            <img src="{{ item.image_url }}" alt="{{ item.name }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ item.name }}</h5>
+              <p class="card-text">{{ item.description[:60] }}...</p>
+              <p class="fw-bold text-dark mb-0">₱{{ item.price }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% else %}
+      <div class="col-12 text-center">
+        <p class="text-muted">No related products available.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer" id="contact">
+  <div class="container">
+    <div class="row text-center text-md-start">
+      <div class="col-md-4 mb-4">
+        <h5>Chickano's Vapeshop</h5>
+        <p>Your trusted partner for premium vaping products and accessories.</p>
+      </div>
+      <div class="col-md-4 mb-4">
+        <h6>Customer Service</h6>
+        <ul class="list-unstyled">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Track Order</a></li>
+          <li><a href="#">Returns & Refunds</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4 mb-4">
+        <h6>Connect</h6>
+        <p>Email: chickanos.vapelounge@gmail.com</p>
+        <p><a href="https://www.facebook.com/chickanosvapeloungeofficial">Facebook</a> | <a href="https://www.instagram.com/chickanosvapelounge">Instagram</a></p>
+      </div>
+      <div>
+        <span>16 Papaya Road, Cabanatuan City, Philippines</span>
+        <span class="ms-3">📦 FREE Returns</span>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <small> 2025 Chickano's Vapeshop. All rights reserved.</small>
+    </div>
+  </div>
+</footer>
+
+<!-- Back to Top Button -->
+<button id="backToTop" class="btn btn-yellow">↑</button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Mobile Menu Toggle
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuButton = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    const searchButton = document.getElementById('searchButton');
+    const mobileSearchContainer = document.getElementById('mobileSearchContainer');
+    const closeMobileSearch = document.getElementById('closeMobileSearch');
+    const mobileSearchInput = document.querySelector('.mobile-search-input');
+    const searchSuggestions = document.getElementById('searchSuggestions');
+    
+    function toggleMenu() {
+      mobileMenu.classList.toggle('show');
+      mobileMenuOverlay.classList.toggle('show');
+      document.body.classList.toggle('menu-open');
+    }
+    
+    function toggleSearch() {
+      mobileSearchContainer.style.display = mobileSearchContainer.style.display === 'none' ? 'block' : 'none';
+      if (mobileSearchContainer.style.display === 'block') {
+        mobileSearchInput.focus();
+      }
+    }
+    
+    if (menuButton) menuButton.addEventListener('click', toggleMenu);
+    if (mobileMenuOverlay) mobileMenuOverlay.addEventListener('click', toggleMenu);
+    if (searchButton) searchButton.addEventListener('click', toggleSearch);
+    if (closeMobileSearch) closeMobileSearch.addEventListener('click', toggleSearch);
+    
+    // Close menu when clicking on nav links
+    document.querySelectorAll('.mobile-menu .nav-link').forEach(link => {
+      link.addEventListener('click', toggleMenu);
+    });
+    
+    // Show bottom navbar on mobile
+    if (window.innerWidth <= 991) {
+      document.querySelector('.bottom-navbar').style.display = 'block';
+    }
+    
+    window.addEventListener('resize', function() {
+      if (window.innerWidth <= 991) {
+        document.querySelector('.bottom-navbar').style.display = 'block';
+      } else {
+        document.querySelector('.bottom-navbar').style.display = 'none';
+      }
+    });
+  });
+</script>
+
+{% if session.swal %}
+<script>
+  Swal.fire({
+    title: "{{ session.swal.title }}",
+    text: "{{ session.swal.text }}",
+    icon: "{{ session.swal.icon }}",
+    confirmButtonColor: "#ffcc00"
+  });
+</script>
+{% set _ = session.pop('swal') %}
+{% endif %}
+</body>
+</html>
